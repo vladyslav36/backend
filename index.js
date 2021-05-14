@@ -1,11 +1,18 @@
-import express from 'express'
-import { config } from 'dotenv'
-import connectDb from './config/db.js'
-import morgan from 'morgan'
-import { notFound } from './config/middleware/notFound.js'
-import { errorHandler } from './config/middleware/errorHandler.js'
+const express=require('express') 
+const path = require('path')
+const cors=require('cors')
 
-config({ path: './config/.env' })
+const dotenv=  require ('dotenv')
+const connectDb =require ('./config/db.js')
+const morgan= require ('morgan')
+const { notFound } = require ('./config/middleware/notFound.js')
+const { errorHandler } = require('./config/middleware/errorHandler.js')
+const Product=require('./models/productModel')
+const Category = require('./models/categoryModel')
+
+
+
+dotenv.config({ path: './config/.env' })
 connectDb()
 
 const app = express()
@@ -13,11 +20,23 @@ const app = express()
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
-
+app.use(cors()) 
 app.use(express.json())
-app.get('/', (req, res) => {
-  res.json({message:'Hello world'})
+app.use(express.static('upload'))
+
+app.get('/api/showcase', async (req, res) => {
+  const showcaseProducts = await Product.find({ isShowcase: true })  
+  res.status(200).json( showcaseProducts)
+  
 })
+app.get('/api/category', async (req, res) => {
+  const pp = await Category.findOne({ name: 'Ника' })
+  const id=pp._id
+  await Category.findOneAndUpdate({ name: "Колготки женские" },{parentCategory:id})
+  const category1=await Category.findOne({name:'Колготки женские'})
+  
+  res.json(category1)
+  })
 
 app.use(notFound)
 app.use(errorHandler)

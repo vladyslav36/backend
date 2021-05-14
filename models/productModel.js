@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+const mongoose =require( 'mongoose')
 
 const productSchema = mongoose.Schema({
   user: {
@@ -17,6 +17,10 @@ const productSchema = mongoose.Schema({
     type: String,
     required:true
   },
+  image: { type: String },
+  addedImages: [
+    {type:String}
+  ],
   category: {
     type: String,
     required:true
@@ -27,6 +31,10 @@ const productSchema = mongoose.Schema({
   },
   description: {
     type:String
+  },
+  isShowcase: {
+    type: Boolean,
+    default:false
   },
   price: {
     type: Number,
@@ -50,4 +58,4 @@ const productSchema = mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema)
   
-export default Product
+module.exports = Product
