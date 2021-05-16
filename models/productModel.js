@@ -41,6 +41,11 @@ const productSchema = mongoose.Schema({
     required: true,
     default:0
   },
+  retailPrice: {
+    type: Number,
+    required: true,
+    default:0
+  },
   currencyValue: {
     type: String,
     required: true,

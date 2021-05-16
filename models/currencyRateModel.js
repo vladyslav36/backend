@@ -1,10 +1,9 @@
 const mongoose=require('mongoose')
 
 const currencyRateShema = mongoose.Schema({
-  usd_sale: { type: Number, default: 0 },
-  usd_buy: { type: Number, default: 0 },
-  eur_sale: { type: Number, default: 0 },
-  eur_buy:{ type: Number, default: 0 }
+  UAH: { type: Number, default: 1 }, 
+  USD: { type: Number, default: 0 }, 
+  EUR: { type: Number, default: 0 }  
 }, {
   timestamps:true
 })

@@ -1,8 +1,7 @@
 const currencyRate = {
-  usd_sale:27.70,
-  usd_buy:27.60,
-  eur_sale:33.40,
-  eur_buy:33.25
+  UAH:1,
+  USD:27.70,  
+  EUR:33.40  
 }
 
 module.exports=currencyRate

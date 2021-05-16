@@ -9,6 +9,7 @@ const products = [
     title: "Классика 20",
     description: "Практичные, полуматовые, классические колготки.",
     price: "16.20",
+    retailPrice: "25.00",
     currencyValue: "UAH",
     countInStock: "100",
     isShowcase: true,
@@ -24,6 +25,7 @@ const products = [
     description:
       "Элегантные фантазийные  колготки без шортиков с эффектным ажурным узором, плоским швом и ромбовидной ластовицей. Преимуществом данных колготок является сетчатое переплетение нитей, благодаря которому они обладают высокой прочностью и не пускают стрелку при случайном их повреждении.",
     price: "30.60",
+    retailPrice: "45.00",
     currencyValue: "UAH",
     countInStock: "100",
     isShowcase: true,
@@ -39,6 +41,7 @@ const products = [
     description:
       "Идеально облегающие, удобные, эластичные, прозрачные, мягкие, эластичные,  с поддерживающим эффектом и фигуроформирующим торсом. Без шортиков, низкой талией, плоским швом и ромбовидной ластовицей.",
     price: "38.40",
+    retailPrice: "50.00",
     currencyValue: "UAH",
     countInStock: "100",
     isShowcase: true,
@@ -54,6 +57,7 @@ const products = [
     description:
       "Эксклюзивные колготы, с подтягивающим эффектом, с распределенным давлением по ноге, плоским швом и уплотненной стопой.",
     price: "48.60",
+    retailPrice: "60.00",
     currencyValue: "UAH",
     countInStock: "100",
     isShowcase: true,
@@ -69,9 +73,10 @@ const products = [
     description:
       "Эксклюзивные колготы, с подтягивающим эффектом, с распределенным давлением по ноге, плоским швом и уплотненной стопой.",
     price: "51.00",
+    retailPrice: "70.00",
     currencyValue: "UAH",
     countInStock: "100",
-    isShowcase: true
+    isShowcase: true,
   },
 ]
 
