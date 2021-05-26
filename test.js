@@ -1,15 +1,16 @@
-const mongoose=require('mongoose')
-const Category = require('./models/categoryModel')
-const dotenv=require('dotenv')
-const connectDb = require('./config/db')
+const fs = require('fs')
+const path = require('path')
 
-dotenv.config({ path: './config/.env' })
-connectDb()
 
-const getCategories = async () => {
-  const categories = await Category.findOne()
-  // const newCategories=await Category.findOneAndUpdate({name:['Ybrf']})
-  console.log(categories)
-}
+fs.mkdir(path.join(__dirname, '/upload/nika'),  (err)=> {
+  if (err) throw err
+  console.log('Directory was created..')
+  fs.rename(path.join(__dirname, '/upload/456.txt'),path.join(__dirname, '/upload/nika/456.txt'),(err)=>{
+  if (err) throw err
+    
+     console.log('ok')
+})
 
-getCategories()
+  
+ 
+})

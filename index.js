@@ -1,4 +1,5 @@
-const express=require('express') 
+const path =require('path')
+const express = require('express')
 const cors=require('cors')
 const dotenv=  require ('dotenv')
 const connectDb =require ('./config/db.js')
@@ -7,23 +8,29 @@ const { notFound } = require ('./config/middleware/notFound.js')
 const { errorHandler } = require('./config/middleware/errorHandler.js')
 const productsRouter = require('./routes/products')
 const categoriesRouter = require('./routes/categories')
-const currencyRateRouter=require('./routes/currencyRate')
+const currencyRateRouter = require('./routes/currencyRate')
+const uploadRouter=require('./routes/upload')
+
 
 dotenv.config({ path: './config/.env' })
+process.env.ROOT_NAME = path.dirname(__filename)
+
 connectDb()
 
 const app = express()
 
+
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
+  app.use(morgan('dev')) 
 }
-app.use(cors()) 
+app.use(cors())  
 app.use(express.json())
-app.use(express.static('upload'))
+app.use('/upload',express.static(path.join(__dirname,'/upload')))
 
 app.use('/api/products', productsRouter)
 app.use('/api/categories',categoriesRouter)
-app.use('/api/currencyrate',currencyRateRouter)
+app.use('/api/currencyrate', currencyRateRouter)
+app.use('/api/upload',uploadRouter)
 
 app.use(notFound)
 app.use(errorHandler)
