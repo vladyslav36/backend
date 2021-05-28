@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
+const slug = require('mongoose-slug-updater')
+
+ mongoose.plugin(slug)
 
 const CategorySchema = mongoose.Schema({
   name: String,
+  slug:{type:String,slug:'name',unique:true},
   title: { type:String, default: '' },
   description: { type: String, default: '' },
   image:String,

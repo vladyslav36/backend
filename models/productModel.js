@@ -1,4 +1,7 @@
-const mongoose =require( 'mongoose')
+const mongoose = require('mongoose')
+const slug = require("mongoose-slug-updater")
+
+mongoose.plugin(slug)
 
 const productSchema = mongoose.Schema({
   user: {
@@ -9,6 +12,7 @@ const productSchema = mongoose.Schema({
     type: String,
     required:true
   },
+  slug: { type: String, slug: 'name', unique: true },
   brand: {
     type: String,
     required:true
