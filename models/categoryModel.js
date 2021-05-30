@@ -5,8 +5,7 @@ const slug = require('mongoose-slug-updater')
 
 const CategorySchema = mongoose.Schema({
   name: String,
-  slug:{type:String,slug:'name',unique:true},
-  title: { type:String, default: '' },
+  slug:{type:String,slug:'name',unique:true}, 
   description: { type: String, default: '' },
   image:String,
   parentCategoryId: {
