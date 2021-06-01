@@ -1,9 +1,11 @@
 const Category = require("../models/categoryModel")
 const mongoose = require("mongoose")
+const { getSlug } = require("../utils/getSlug")
 
 const path = require("path")
-const { moveToDir, moveToCategoryDir } = require("../utils/moveToDir")
+const { updateImageToSlug, moveToCategoryDir,removeImage } = require("../utils/moveToDir")
 const { findOne } = require("../models/categoryModel")
+const Product = require("../models/productModel")
 
 exports.getAllCategories = async (req, res, next) => {
   try {
@@ -19,31 +21,31 @@ exports.addCategory = async (req, res, next) => {
   // /upload/images /category / { slug файла } и
   // сохранение нового пути
 
-  const { name, parentCategory, parentCategoryId, description } = req.body
+  const { name, parentCategory, parentCategoryId, description,image } = req.body
   // Формирование level
   const level =
     parentCategoryId === null
       ? 0
       : (await Category.findById({ _id: parentCategoryId })).level + 1
+  
+  const slug = getSlug(name)
+
+  const newImage = req.body.uploadedImage
+    ? moveToCategoryDir(req.body.uploadedImage, slug, image)
+    : ""
 
   const category = new Category({
     name,
     parentCategory,
     parentCategoryId,
     description,
-    image: "",
-    level    
+    image: newImage,
+    level,
+    slug,
   })
-  // Первоначальное сохранение категории в базе
-  const data = await category.save()
-  const slug = data.slug
-  // Взятие slug и переименование файла картинки
-  const newImage = req.body.uploadedImage
-    ? moveToCategoryDir(req.body.uploadedImage, slug)
-    : ""
-  //  обновление поля image  в базе
+
   try {
-    await category.updateOne({ image: newImage })
+    const data = await category.save()
     res.status(200).json({ message: "Категория успешно добавлена" })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -55,7 +57,7 @@ exports.updateCategory = async (req, res) => {
     name,
     parentCategory,
     parentCategoryId,
-    description,    
+    description,
     _id,
     image,
     uploadedImage,
@@ -65,20 +67,21 @@ exports.updateCategory = async (req, res) => {
     parentCategoryId === null
       ? 0
       : (await Category.findById({ _id: parentCategoryId })).level + 1
+  
+  const slug = getSlug(name)
 
-  await Category.updateOne(
-    { _id },
-    { name, parentCategory, parentCategoryId, description, image,level }
-  )
-  const category = await Category.findOne({ _id })
+  
+  // const category = await Category.findOne({ _id })
 
-  const slug = category.slug
   const newImage = uploadedImage
     ? moveToCategoryDir(uploadedImage, slug, image)
-    : image
+    : updateImageToSlug(slug,image)
 
   try {
-    await category.updateOne({ image: newImage })
+     await Category.updateOne(
+    { _id },
+    { name, parentCategory, parentCategoryId, description, image:newImage, level, slug }
+  )
     res.status(200).json({ message: "Категория успешно изменена" })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -86,8 +89,11 @@ exports.updateCategory = async (req, res) => {
 }
 
 exports.deleteCategory = async (req, res, next) => {
-  const { id }=req.params
-   await Category.deleteOne({ _id: id })
-  
+  const { id } = req.params
+  const category = await Category.findOne({ _id: id })
+  const image = category.image
+  removeImage(image)
+  await Category.deleteOne({ _id: id })
+
   res.status(200).json({ message: "success" })
 }

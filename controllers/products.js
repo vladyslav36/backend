@@ -9,8 +9,11 @@ exports.getShowcaseProducts = async (req, res, next) => {
   }
   
 }
-exports.getAllProducts = (req, res,next) => {
-  res.send('getAllProducts')
+exports.getAllProducts = async (req, res, next) => {
+  const { category }=req.query
+  const products = await Product.find({ category })
+  
+  res.status(200).json({products})
 }
 exports.addProducts = (req, res,next) => {
   res.send('addProducts')

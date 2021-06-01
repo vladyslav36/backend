@@ -31,7 +31,7 @@ const importData = async () => {
     
     
     
-    await Product.insertMany(sampleProducts)
+    await Product.insertMany (sampleProducts)
     await Category.insertMany(sampleCategories)
     await CurrencyRate.insertMany(currencyRate)
     console.log('Data imported')

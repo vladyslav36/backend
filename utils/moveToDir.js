@@ -3,7 +3,7 @@
 // возвращает новый путь для сохранения в базе данных
 
 const fs = require("fs")
-const slugify = require("slugify")
+
 const path = require("path")
 
 exports.moveToDir = (imagePath, folder) => {
@@ -45,7 +45,7 @@ exports.moveToCategoryDir = (uploadedImage, slug, image) => {
   const newPath = `/upload/images/category/${slug}${extName}`
   const fullNewPath = `${ROOT_NAME}${newPath}`
   const oldPath = `${ROOT_NAME}${uploadedImage}`
-  const pathToRemove = `${ROOT_NAME}${image}`
+  const pathToRemove = image ? `${ROOT_NAME}${image}` : ""
 
   // перемещение файла в папку category
   const save = () => {
@@ -75,4 +75,29 @@ exports.moveToCategoryDir = (uploadedImage, slug, image) => {
     })
   }
   return newPath
+}
+
+exports.updateImageToSlug = (slug, image) => {
+  const ROOT_NAME = process.env.ROOT_NAME
+  const dirName = path.dirname(image)
+  const extName=path.extname(image)
+  const newImage = `${dirName}/${slug}${extName}`
+  if (fs.existsSync(`${ROOT_NAME}${image}`)) {
+    fs.rename(`${ROOT_NAME}${image}`, `${ROOT_NAME}${newImage}`, (err) => {
+      if (err) throw err      
+    })
+  }
+return newImage
+}
+
+exports.removeImage = (image) => {
+  const ROOT_NAME = process.env.ROOT_NAME
+  const pathToRemove=`${ROOT_NAME}${image}`
+  if (fs.existsSync(`${pathToRemove}`)) {
+    fs.rm(pathToRemove, (err) => {
+      if (err) throw err
+    })
+  } else {
+    console.log("File not exist")
+  }
 }
