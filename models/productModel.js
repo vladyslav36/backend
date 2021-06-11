@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
 
-
 const ProductSchema = mongoose.Schema(
   {
     user: {
@@ -8,22 +7,22 @@ const ProductSchema = mongoose.Schema(
       ref: "User",
     },
     name: {
-      type: String
-      
+      type: String,
+      required: true,
     },
-    slug:String,
+    slug: String,
 
     model: {
       type: String,
       required: true,
     },
+    productSlug: String,
     image: { type: String },
     addedImages: [{ type: String }],
     category: {
       type: String,
-      required: true,
     },
-
+    categorySlug: String,
     description: {
       type: String,
     },
@@ -33,12 +32,10 @@ const ProductSchema = mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true,
       default: 0,
     },
     retailPrice: {
       type: Number,
-      required: true,
       default: 0,
     },
     currencyValue: {
@@ -48,7 +45,6 @@ const ProductSchema = mongoose.Schema(
     },
     countInStock: {
       type: Number,
-      required: true,
       default: 100,
     },
   },
