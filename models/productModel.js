@@ -16,6 +16,11 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Brand',
+      default:null
+    },
     productSlug: String,
     image: { type: String },
     addedImages: [{ type: String }],
@@ -26,6 +31,17 @@ const ProductSchema = mongoose.Schema(
     description: {
       type: String,
     },
+    options: [
+      {
+        color: String,
+        size: String,
+        height: String,
+        qnt: {
+          type: Number,
+          default: 100
+        }
+      }
+    ],
     isShowcase: {
       type: Boolean,
       default: false,
