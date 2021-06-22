@@ -16,32 +16,34 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    brand: {
+    brand: String,    
+    brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Brand',
-      default:null
-    },
-    productSlug: String,
+      default: null
+    },    
     image: { type: String },
     addedImages: [{ type: String }],
     category: {
       type: String,
+    },    
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      default: null
     },
-    categorySlug: String,
     description: {
       type: String,
     },
-    options: [
-      {
-        color: String,
-        size: String,
-        height: String,
-        qnt: {
-          type: Number,
-          default: 100
-        }
-      }
-    ],
+    
+    colors: [String],
+    sizes: [String],
+    heights: [String],
+    isInStock: {
+      type: Boolean,
+      default: true
+    },
+  
     isShowcase: {
       type: Boolean,
       default: false,
@@ -58,11 +60,8 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
       default: "UAH",
-    },
-    countInStock: {
-      type: Number,
-      default: 100,
-    },
+    }
+    
   },
   {
     timestamps: true,

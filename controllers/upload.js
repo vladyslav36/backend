@@ -1,15 +1,16 @@
 const path = require('path')
-const multer=require('multer')
+const multer = require('multer')
+const uniqueSlug = require("unique-slug")
 
  
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null,'upload/images/temp')
+      cb(null,`upload/images/temp`)
     },
     filename: function (req, file, cb) {
       cb(
         null,
-        `${path.basename(file.originalname)}`
+        `${uniqueSlug()}-${path.basename(file.originalname)}`
       )
     }
   })
