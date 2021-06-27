@@ -1,5 +1,7 @@
 const { findOne } = require("../models/productModel")
 const Product = require("../models/productModel")
+const Category = require('../models/categoryModel')
+const Brand=require('../models/brandModel')
 const { getSlug } = require("../utils/getSlug")
 const {
   moveToDir,
@@ -17,7 +19,36 @@ exports.getShowcaseProducts = async (req, res, next) => {
 }
 exports.getAllProducts = async (req, res, next) => {
   try {
-    const products = await Product.find()
+    
+    const products = await Product.find() 
+
+    res.status(200).json({ products })
+  } catch (error) {
+    return res.status(500).json({ msg: "Server error" })
+  }
+}
+exports.getProductsNames = async (req,res,next) => {
+  try {
+    const products = await Product.find({}, { name: 1 })
+    const categories = await Category.find({}, { name: 1 })
+    const brands = await Brand.find({}, { name: 1 })
+    res.status(200).json({
+      products,
+      categories,
+      brands
+    })
+  } catch (error) {
+    return res.status(500).json({ msg: "Server error" })
+  }
+}
+exports.getSearchProducts = async ({query:{product,brand,category}}, res, next) => {
+  try {
+    
+    const products = await Product.find({
+      name: { $regex: `${product}` },
+      brand: { $regex: `${brand}` },
+      category: { $regex: `${category}` },
+    }) 
 
     res.status(200).json({ products })
   } catch (error) {
@@ -175,6 +206,7 @@ exports.deleteProduct = async (req, res, next) => {
       product.addedImages.map(async (item) => await removeImage(item))
     )
     await Product.deleteOne({ _id: id })
+
     res.status(200).json({ message: "success" })
   } catch (error) {
     res.status(500).json({ message: error.message })
