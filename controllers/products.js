@@ -17,19 +17,30 @@ exports.getShowcaseProducts = async (req, res, next) => {
     return res.status(500).json({ msg: "Server error" })
   }
 }
-exports.getAllProducts = async (req, res, next) => {
+exports.getAllProducts = async (req, res, next) => {  
+  try {    
+    const products = await Product.find()
+    res.status(200).json({ products })
+  } catch (error) {
+    return res.status(500).json({ msg: "Server error" })
+  }
+}
+exports.getProductsCategoryId = async (req, res, next) => {
+  const categoryId = req.params.id
+  console.log(categoryId)
   try {
     
-    const products = await Product.find() 
+    const products = await Product.find({categoryId})
 
     res.status(200).json({ products })
   } catch (error) {
     return res.status(500).json({ msg: "Server error" })
   }
 }
+
 exports.getProductsNames = async (req,res,next) => {
   try {
-    const products = await Product.find({}, { name: 1 })
+    const products = await Product.find({}, { name: 1,model:1 })
     const categories = await Category.find({}, { name: 1 })
     const brands = await Brand.find({}, { name: 1 })
     res.status(200).json({
@@ -41,11 +52,12 @@ exports.getProductsNames = async (req,res,next) => {
     return res.status(500).json({ msg: "Server error" })
   }
 }
-exports.getSearchProducts = async ({query:{product,brand,category}}, res, next) => {
+exports.getSearchProducts = async ({query:{product='',brand='',category='',model=''}}, res, next) => {
   try {
-    
+  
     const products = await Product.find({
       name: { $regex: `${product}` },
+      model:{$regex:`${model}`},
       brand: { $regex: `${brand}` },
       category: { $regex: `${category}` },
     }) 
@@ -57,7 +69,7 @@ exports.getSearchProducts = async ({query:{product,brand,category}}, res, next) 
 }
 
 exports.getProduct = async (req, res, next) => {
-  const { slug } = req.params
+  const { slug } = req.params 
   try {
     const product = await Product.findOne({ slug })
     res.status(200).json({ product })
