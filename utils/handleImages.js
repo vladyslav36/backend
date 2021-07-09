@@ -18,15 +18,19 @@ exports.moveToDir = async (slug, image, folder) => {
       return ""
     }
   } catch (err) {
+    
     console.error(err)
   }
 }
 
 exports.clearTempDir = async () => {
   const ROOT_NAME = process.env.ROOT_NAME
+  
   try {
     await fs.emptyDir(`${ROOT_NAME}/upload/images/temp`)
+   
   } catch (error) {
+    
     console.error(error)
   }
 }

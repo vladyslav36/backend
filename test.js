@@ -10,6 +10,12 @@
 
 // getPromise()
 
-let arr = [{ name: '345', price: 34 }, { name: '2', price: 78 }, { name: '56', price: 123 }]
+// let arr = [
+//   { name: "red", price: 34 },
+//   { name: "green", price: 78 },
+//   { name: "blue", price: 123 },
+//   { name: "orange", price: 123 },
+// ]
 
-console.log(arr.sort((a,b)=>a.name-b.name))
+// console.log(arr.sort((a,b)=>a.name>b.name?1:-1))
+

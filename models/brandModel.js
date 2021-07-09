@@ -3,11 +3,26 @@ const mongoose = require("mongoose")
 const BrandSchema = mongoose.Schema(
   {
     name: String,
-    slug:String,
+    slug: String,
     image: String,
-    colors: [String],
-    sizes: [String],
-    heights: [String],
+    colors: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
+    sizes: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
+    heights: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
   },
   {
     timestamps: true,

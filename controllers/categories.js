@@ -1,6 +1,6 @@
 const Category = require("../models/categoryModel")
 const { getSlug } = require("../utils/getSlug")
-const { moveToDir, removeImage } = require("../utils/handleImages")
+const { moveToDir, removeImage,clearTempDir } = require("../utils/handleImages")
 
 exports.getAllCategories = async (req, res, next) => {
   try {

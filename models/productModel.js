@@ -16,52 +16,66 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    brand: String,    
+    brand: String,
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Brand',
-      default: null
-    },    
+      ref: "Brand",
+      default: null,
+    },
     image: { type: String },
     addedImages: [{ type: String }],
     category: {
       type: String,
-    },    
+    },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-      default: null
+      ref: "Category",
+      default: null,
     },
     description: {
       type: String,
     },
-    
-    colors: [String],
-    sizes: [String],
-    heights: [String],
+
+    colors: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
+    sizes: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
+    heights: [
+      {
+        name: String,
+        price: String,
+      },
+    ],
     isInStock: {
       type: Boolean,
-      default: true
+      default: true,
     },
-  
+
     isShowcase: {
       type: Boolean,
       default: false,
     },
     price: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "",
     },
     retailPrice: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "",
     },
     currencyValue: {
       type: String,
       required: true,
       default: "UAH",
-    }
-    
+    },
   },
   {
     timestamps: true,

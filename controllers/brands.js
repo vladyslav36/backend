@@ -25,9 +25,9 @@ await clearTempDir()
   const brand = new Brand({
     name,
     slug,
-    colors: colors.sort(),
-    sizes: sizes.sort(),
-    heights: heights.sort(),
+    colors: colors.sort((a, b) => (a.name > b.name ? 1 : -1)),
+    sizes: sizes.sort((a, b) => (a.name > b.name ? 1 : -1)),
+    heights: heights.sort((a, b) => (a.name > b.name ? 1 : -1)),
     image: newImage,
   })
 
