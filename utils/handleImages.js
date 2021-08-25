@@ -1,5 +1,6 @@
 const fs = require("fs-extra")
 const path = require("path")
+const sharp = require("sharp")
 
 // Функция перемещает картинку из папки /upload/images в папку
 // /upload/images/category
@@ -18,19 +19,30 @@ exports.moveToDir = async (slug, image, folder) => {
       return ""
     }
   } catch (err) {
-    
     console.error(err)
   }
 }
-
+exports.resizeImage = async (input) => {
+  try {
+    const ROOT_NAME = process.env.ROOT_NAME
+    const parsed = path.parse(input)
+    const sm = `${parsed.dir}/${parsed.name}-sm${parsed.ext}`
+    const md = `${parsed.dir}/${parsed.name}-md${parsed.ext}`
+    const outputMd = `${ROOT_NAME}${md}`
+    const outputSm = `${ROOT_NAME}${sm}`
+    await sharp(`${ROOT_NAME}${input}`).resize({ width: 200 }).toFile(outputMd)
+    await sharp(`${ROOT_NAME}${input}`).resize({ width: 50 }).toFile(outputSm)
+    return { md, sm }
+  } catch (error) {
+    console.log(error)
+  }
+}
 exports.clearTempDir = async () => {
   const ROOT_NAME = process.env.ROOT_NAME
-  
+
   try {
     await fs.emptyDir(`${ROOT_NAME}/upload/images/temp`)
-   
   } catch (error) {
-    
     console.error(error)
   }
 }
@@ -52,13 +64,14 @@ exports.updateImageToSlug = async (slug, image) => {
     console.error(err)
   }
 }
+
 // Удаление картинки при удалении категории
 exports.removeImage = async (image) => {
   try {
     const ROOT_NAME = process.env.ROOT_NAME
     if (image) {
-      const pathToRemove =`${ROOT_NAME}${image}`
-      await fs.remove(pathToRemove)      
+      const pathToRemove = `${ROOT_NAME}${image}`
+      await fs.remove(pathToRemove)
     }
   } catch (error) {
     console.error(err)

@@ -22,8 +22,9 @@ const ProductSchema = mongoose.Schema(
       ref: "Brand",
       default: null,
     },
-    image: { type: String },
-    addedImages: [{ type: String }],
+    images: [{ type: String }],
+    imagesMd: [{ type: String }],
+    imagesSm: [{ type: String }],
     category: {
       type: String,
     },

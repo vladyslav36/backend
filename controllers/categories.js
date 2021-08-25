@@ -1,6 +1,19 @@
 const Category = require("../models/categoryModel")
 const { getSlug } = require("../utils/getSlug")
-const { moveToDir, removeImage,clearTempDir } = require("../utils/handleImages")
+const multer = require('multer')
+const path=require('path')
+const { removeImage, updateImageToSlug } = require("../utils/handleImages")
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, `upload/images/category/`)
+  },
+  filename: function (req, file, cb) {
+    const { name } = JSON.parse(req.body.values)
+    req.body.slug = getSlug(name)
+    cb(null, `${req.body.slug}${path.extname(file.originalname)}`)
+  },
+})
 
 exports.getAllCategories = async (req, res, next) => {
   try {
@@ -11,26 +24,25 @@ exports.getAllCategories = async (req, res, next) => {
   }
 }
 
-exports.addCategory = async (req, res, next) => {
+exports.addCategory = [multer({ storage }).single('image'),
+  async (req, res, next) => {
   try {
-    const { name, parentCategory, parentCategoryId, description, image } =
-      req.body
+    const { name, parentCategory, parentCategoryId, description } =JSON.parse(req.body.values)
+      
     // Формирование level
     const level =
       parentCategoryId === null
         ? 0
         : (await Category.findById({ _id: parentCategoryId })).level + 1
 
-    const slug = getSlug(name)
-    const folder = "category"
-    const newImage = await moveToDir(slug, image, folder)
-    await clearTempDir()
+    const slug = req.body.slug || getSlug(name)
+    
     const category = new Category({
       name,
       parentCategory,
       parentCategoryId,
       description,
-      image: newImage,
+      image: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : "",
       level,
       slug,
     })
@@ -41,22 +53,33 @@ exports.addCategory = async (req, res, next) => {
     res.status(500).json({ message: error.message })
   }
 }
-
-exports.updateCategory = async (req, res) => {
+]
+exports.updateCategory = [multer({ storage }).single('image'),async (req, res) => {
   try {
-    const { name, parentCategory, parentCategoryId, description, _id, image } =
-      req.body
+    const { name, parentCategory, parentCategoryId, description, _id } =JSON.parse(req.body.values)
+    const imageClientPath = req.body.imageClientPath
+    const slug=req.body.slug||getSlug(name)
 
     const level =
       parentCategoryId === null
         ? 0
         : (await Category.findById({ _id: parentCategoryId })).level + 1
 
-    const slug = getSlug(name)
-    const folder = "category"
-    const newImage = await moveToDir(slug, image, folder)
-    await clearTempDir()
+   
+    
     const category = await Category.findOne({ _id })
+
+    let imagePath = ""
+    if (req.file) {
+      imagePath = `/${req.file.path.replace(/\\/g, "/")}`
+      await removeImage(category.image)
+    } else {
+      if (imageClientPath) {
+        imagePath = await updateImageToSlug(slug, category.image)
+      } else {
+        await removeImage(category.image)
+      }
+    }
     await removeImage(category.image)
     await Category.updateOne(
       { _id },
@@ -65,7 +88,7 @@ exports.updateCategory = async (req, res) => {
         parentCategory,
         parentCategoryId,
         description,
-        image: newImage,
+        image: imagePath,
         level,
         slug,
       }
@@ -75,7 +98,7 @@ exports.updateCategory = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
-
+]
 exports.deleteCategory = async (req, res, next) => {
   try {
   const { id } = req.params

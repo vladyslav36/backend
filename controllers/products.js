@@ -3,11 +3,27 @@ const Product = require("../models/productModel")
 const Category = require('../models/categoryModel')
 const Brand=require('../models/brandModel')
 const { getSlug } = require("../utils/getSlug")
+const multer = require('multer')
+const path=require('path')
 const {
   moveToDir,
   removeImage,
   clearTempDir,
+  resizeImage
 } = require("../utils/handleImages")
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, `upload/images/product/`)
+  },
+  filename: function (req, file, cb) {
+    const { name } = JSON.parse(req.body.values)
+     const slug = getSlug(name)
+    
+    cb(null, `${slug}${path.extname(file.originalname)}`)
+  },
+})
+const sortOpt = (arr) => arr.sort((a, b) => (a.name > b.name ? 1 : -1))
 
 exports.getShowcaseProducts = async (req, res, next) => {
   try {
@@ -26,12 +42,9 @@ exports.getAllProducts = async (req, res, next) => {
   }
 }
 exports.getProductsCategoryId = async (req, res, next) => {
-  const categoryId = req.params.id
-  console.log(categoryId)
-  try {
-    
+  const categoryId = req.params.id  
+  try {    
     const products = await Product.find({categoryId})
-
     res.status(200).json({ products })
   } catch (error) {
     return res.status(500).json({ msg: "Server error" })
@@ -69,7 +82,8 @@ exports.getSearchProducts = async ({query:{product='',brand='',category='',model
 }
 
 exports.getProduct = async (req, res, next) => {
-  const { slug } = req.params 
+  const { slug } = req.params
+  console.log(slug)
   try {
     const product = await Product.findOne({ slug })
     res.status(200).json({ product })
@@ -77,14 +91,13 @@ exports.getProduct = async (req, res, next) => {
     return res.status(500).json({ msg: "Server error" })
   }
 }
-exports.addProducts = async (req, res, next) => {
+exports.addProducts = [ multer({ storage }).array('images'), async (req, res, next) => {
   try {
     const {
       name,
       model,
       brand,
-      brandId,
-      image,
+      brandId,      
       category,
       categoryId,
       colors,
@@ -92,46 +105,43 @@ exports.addProducts = async (req, res, next) => {
       heights,
       isShowcase,
       isInStock,
-      description,
-      addedImages,
+      description,      
       price,
       retailPrice,
-      currencyValue,
-      countInStock,
-    } = req.body
+      currencyValue      
+    } = JSON.parse(req.body.values)
 
-    const slug = getSlug(name)
-    const folder = "product"
-    const newImage = await moveToDir(slug, image, folder)
-
-    const newAddedImages = await Promise.all(
-      addedImages.map(
-        async (item) => await moveToDir(getSlug(name), item, folder)
-      )
-    )
-    await clearTempDir()
-
+    const slug = req.files.length?path.parse(req.files[0].filename).name:getSlug(name)
+    const images = req.files.map((item) => `/${item.path.replace(/\\/g, "/")}`) || []
+    const imagesMd = []
+    const imagesSm = []
+    images.forEach((item, i) => {
+      const { md, sm } = resizeImage(item)
+      imagesMd[i] = md
+      imagesSm[i]=sm
+    })
+    
+    
     const product = new Product({
       name,
       model,
       brand,
       brandId,
       slug,
-      image: newImage,
+      images,
+      imagesMd,
+      imagesSm,
       category,
       categoryId,
-      colors: colors.sort((a, b) => (a.name > b.name ? 1 : -1)),
-      sizes: sizes.sort((a, b) => (a.name > b.name ? 1 : -1)),
-      heights: heights.sort((a, b) => (a.name > b.name ? 1 : -1)),
+      colors: sortOpt(colors),
+      sizes: sortOpt(sizes),
+      heights: sortOpt(heights),
       description,
-      addedImages: [...newAddedImages],
       isShowcase: isShowcase === "ДА" ? true : false,
       isInStock: isInStock === "ДА" ? true : false,
-
       price,
       retailPrice,
-      currencyValue,
-      countInStock,
+      currencyValue    
     })
     const data = await product.save()
 
@@ -141,7 +151,7 @@ exports.addProducts = async (req, res, next) => {
     return res.status(500).json({ msg: "Server error" })
   }
 }
-
+]
 exports.updateProduct = async (req, res, next) => {
   try {
     const {
