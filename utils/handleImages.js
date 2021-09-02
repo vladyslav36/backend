@@ -22,20 +22,21 @@ exports.moveToDir = async (slug, image, folder) => {
     console.error(err)
   }
 }
-exports.resizeImage = async (input) => {
-  try {
+exports.resizeImage = (input) => {
+  
     const ROOT_NAME = process.env.ROOT_NAME
     const parsed = path.parse(input)
     const sm = `${parsed.dir}/${parsed.name}-sm${parsed.ext}`
     const md = `${parsed.dir}/${parsed.name}-md${parsed.ext}`
     const outputMd = `${ROOT_NAME}${md}`
     const outputSm = `${ROOT_NAME}${sm}`
-    await sharp(`${ROOT_NAME}${input}`).resize({ width: 200 }).toFile(outputMd)
-    await sharp(`${ROOT_NAME}${input}`).resize({ width: 50 }).toFile(outputSm)
+    sharp(`${ROOT_NAME}${input}`).resize({ width: 200 }).toFile(outputMd).catch(err=>console.log('Resizing error'))
+    sharp(`${ROOT_NAME}${input}`)
+      .resize({ width: 50 })
+      .toFile(outputSm)
+      .catch((err) => console.log("Resizing error"))    
     return { md, sm }
-  } catch (error) {
-    console.log(error)
-  }
+ 
 }
 exports.clearTempDir = async () => {
   const ROOT_NAME = process.env.ROOT_NAME
@@ -50,7 +51,7 @@ exports.clearTempDir = async () => {
 // если пользователь редактировал категорию без изменения картинки
 exports.updateImageToSlug = async (slug, image) => {
   try {
-    const ROOT_NAME = process.env.ROOT_NAME
+   const ROOT_NAME = process.env.ROOT_NAME
     if (image) {
       const dirName = path.dirname(image)
       const extName = path.extname(image)
@@ -61,13 +62,16 @@ exports.updateImageToSlug = async (slug, image) => {
       return ""
     }
   } catch (error) {
-    console.error(err)
+    console.error(error)
   }
 }
+
+
 
 // Удаление картинки при удалении категории
 exports.removeImage = async (image) => {
   try {
+    
     const ROOT_NAME = process.env.ROOT_NAME
     if (image) {
       const pathToRemove = `${ROOT_NAME}${image}`
