@@ -57,7 +57,7 @@ exports.getProductsCategoryId = async (req, res, next) => {
 
 exports.getProductsNames = async (req, res, next) => {
   try {
-    const products = await Product.find({}, { name: 1, model: 1 })
+    const products = await Product.find({}, { name: 1, model: 1,imagesSm:1 })
     const categories = await Category.find({}, { name: 1 })
     const brands = await Brand.find({}, { name: 1 })
     res.status(200).json({
