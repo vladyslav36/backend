@@ -1,5 +1,4 @@
 const Category = require("../models/categoryModel")
-const Product = require("../models/productModel")
 const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const path = require("path")
@@ -18,36 +17,8 @@ const storage = multer.diskStorage({
 
 exports.getAllCategories = async (req, res, next) => {
   try {
-    const idToString = (id) => {
-      return id === null ? '' : id.toString()
-    }
-
-    const categories = await Category.find()
-    const prodCatId = await Product.find({}, { categoryId: 1 })
-
-    // Подсчет кол-ва товаров в каждой категории
-    const qnt = categories.map((category) => {
-      let count = 0      
-      const qntProducts = (category) => {
-        const children = categories.filter(item => idToString(item.parentCategoryId) ===idToString(category._id))
-        if (children.length) {          
-          children.forEach((child) => {
-            qntProducts(child)
-          })
-        } else {
-          const prodInCategory = prodCatId.filter(
-            (item) =>idToString(item.categoryId) ===idToString(category._id)
-            
-          )
-          
-          count += prodInCategory.length
-        }
-      }
-      qntProducts(category)
-      return { [category._id]: count }
-    })
-    // 
-    res.status(200).json({ categories, qnt:Object.assign({},...qnt)})
+    const categories = await Category.find()   
+    res.status(200).json({ categories})
   } catch (error) {
     return res.status(500).json({ msg: "Server error" })
   }

@@ -14,6 +14,7 @@ const uploadRouter = require('./routes/upload')
 
 
 
+
 dotenv.config({ path: './config/.env' })
 process.env.ROOT_NAME = path.dirname(__filename)
 
@@ -30,9 +31,10 @@ app.use(express.json())
 app.use('/upload',express.static(path.join(__dirname,'/upload')))
 
 app.use('/api/products', productsRouter)
-app.use('/api/categories',categoriesRouter)
+app.use('/api/categories', categoriesRouter)
+
 app.use('/api/currencyrate', currencyRateRouter)
-app.use('/api/brands',brandsRouter)
+app.use('/api/brands', brandsRouter)
 app.use('/api/upload',uploadRouter)
 
 app.use(notFound)
