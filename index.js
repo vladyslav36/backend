@@ -11,6 +11,7 @@ const categoriesRouter = require('./routes/categories')
 const currencyRateRouter = require('./routes/currencyRate')
 const brandsRouter=require('./routes/brands')
 const uploadRouter = require('./routes/upload')
+const cartRouter=require('./routes/cart')
 
 
 
@@ -32,7 +33,7 @@ app.use('/upload',express.static(path.join(__dirname,'/upload')))
 
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoriesRouter)
-
+app.use('/api/cart',cartRouter)
 app.use('/api/currencyrate', currencyRateRouter)
 app.use('/api/brands', brandsRouter)
 app.use('/api/upload',uploadRouter)
