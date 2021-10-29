@@ -3,6 +3,7 @@ const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const path = require("path")
 const { removeImage, updateImageToSlug } = require("../utils/handleImages")
+const asyncHandler=require('express-async-handler')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -15,19 +16,18 @@ const storage = multer.diskStorage({
   },
 })
 
-exports.getAllCategories = async (req, res, next) => {
-  try {
+exports.getAllCategories = asyncHandler(
+  async (req, res, next) => {  
     const categories = await Category.find()   
-    res.status(200).json({ categories})
-  } catch (error) {
-    return res.status(500).json({ msg: "Server error" })
-  }
+    res.status(200).json({ categories})  
 }
+) 
 
 exports.addCategory = [
   multer({ storage }).single("image"),
-  async (req, res, next) => {
-    try {
+  asyncHandler(
+    async (req, res, next) => {
+    
       const { name, parentCategory, parentCategoryId, description } =
         JSON.parse(req.body.values)
 
@@ -51,15 +51,15 @@ exports.addCategory = [
 
       await category.save()
       res.status(200).json({ message: "Категория успешно добавлена" })
-    } catch (error) {
-      res.status(500).json({ message: error.message })
-    }
-  },
+    
+  }
+  )
+  
 ]
 exports.updateCategory = [
   multer({ storage }).single("image"),
-  async (req, res) => {
-    try {
+  asyncHandler(
+    async (req, res) => {    
       const { name, parentCategory, parentCategoryId, description, _id } =
         JSON.parse(req.body.values)
       const imageClientPath = req.body.imageClientPath
@@ -96,20 +96,17 @@ exports.updateCategory = [
           slug,
         }
       )
-      res.status(200).json({ message: "Категория успешно изменена" })
-    } catch (error) {
-      res.status(500).json({ message: error.message })
-    }
-  },
+      res.status(200).json({ message: "Категория успешно изменена" })    
+  }
+  )
+  
 ]
-exports.deleteCategory = async (req, res, next) => {
-  try {
+exports.deleteCategory = asyncHandler(
+  async (req, res, next) => {  
     const { id } = req.params
     const category = await Category.findOne({ _id: id })
     await removeImage(category.image)
     await Category.deleteOne({ _id: id })
-    res.status(200).json({ message: "success" })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
+    res.status(200).json({ message: "success" }) 
 }
+) 

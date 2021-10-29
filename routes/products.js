@@ -1,8 +1,9 @@
 const express=require('express')
 const router = express.Router()
+const { protect } = require("../middleware/auth")
 const { getAllProducts, getShowcaseProducts, addProducts, deleteProduct,getProduct,updateProduct,getSearchProducts, getProductsNames,getProductsCategoryId } =require('../controllers/products')
 
-router.route('/').get(getAllProducts).post(addProducts).put(updateProduct)
+router.route('/').get(getAllProducts).post(protect,addProducts).put(protect,updateProduct)
 
 router.route('/search').get(getSearchProducts)
 
@@ -14,7 +15,7 @@ router.route('/showcase').get(getShowcaseProducts)
 
 router.route('/:slug').get(getProduct)
 
-router.route('/:id').delete(deleteProduct)
+router.route('/:id').delete(protect,deleteProduct)
 
 
 

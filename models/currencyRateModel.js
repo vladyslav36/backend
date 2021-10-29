@@ -10,4 +10,4 @@ const currencyRateShema = mongoose.Schema({
 
 const CurrencyRate=mongoose.model('CurrencyRate',currencyRateShema)
 
-module.exports=CurrencyRate
+module.exports=CurrencyRate 

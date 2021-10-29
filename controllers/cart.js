@@ -1,11 +1,10 @@
 const nodemailer = require("nodemailer")
+const asyncHandler=require('express-async-handler')
 
 
 
-
-exports.sendMail = (req, res) => {
-  const { mailString } = req.body
-  try {
+exports.sendMail =asyncHandler((req, res) => {
+  const { mailString } = req.body 
     const user = process.env.MAILUSER
     const pass=process.env.MAILPASS
     const mail = async () => {
@@ -21,18 +20,16 @@ exports.sendMail = (req, res) => {
       const info = await transporter.sendMail({
         from: user,
         to: "vladyslav36@gmail.com",
-        subject: "Hello",        
+        subject: "Заказ",        
         html: mailString,
       })
 
   
     }
     mail()
-    res.status(200).json({msg:'Письмо успешно отправлено'})
-  } catch (error) {
-    res.status(500).json({msg:'Error to send email'})
-  }
+    res.status(200).json({message:'Письмо успешно отправлено'})
+  
 }
-
+)
 
 

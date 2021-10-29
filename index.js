@@ -4,14 +4,15 @@ const cors=require('cors')
 const dotenv=  require ('dotenv')
 const connectDb =require ('./config/db.js')
 const morgan= require ('morgan')
-const { notFound } = require ('./config/middleware/notFound.js')
-const { errorHandler } = require('./config/middleware/errorHandler.js')
+const { notFound } = require ('./middleware/notFound.js')
+const { errorHandler } = require('./middleware/errorHandler.js')
 const productsRouter = require('./routes/products')
 const categoriesRouter = require('./routes/categories')
 const currencyRateRouter = require('./routes/currencyRate')
 const brandsRouter=require('./routes/brands')
 const uploadRouter = require('./routes/upload')
-const cartRouter=require('./routes/cart')
+const cartRouter = require('./routes/cart')
+const userRouter=require('./routes/user')
 
 
 
@@ -30,7 +31,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(cors())  
 app.use(express.json())
 app.use('/upload',express.static(path.join(__dirname,'/upload')))
-
+app.use('/api/user',userRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/cart',cartRouter)

@@ -17,23 +17,23 @@ connectDb()
 
 const importData = async () => {
   try {
-    await Order.deleteMany()
-    await Product.deleteMany()
+    // await Order.deleteMany()
+    // await Product.deleteMany()
     await User.deleteMany()
-    await Category.deleteMany()
-    await CurrencyRate.deleteMany()
+    // await Category.deleteMany()
+    // await CurrencyRate.deleteMany()
     const createdUsers = await User.insertMany(users)
     
     const adminUser = createdUsers[0]._id
     
-    const sampleProducts = products.map(product => ({...product,user:adminUser}))
-    const sampleCategories = categories.map(category => ({...category,parentCategory:adminUser}))
+    // const sampleProducts = products.map(product => ({...product,user:adminUser}))
+    // const sampleCategories = categories.map(category => ({...category,parentCategory:adminUser}))
     
     
     
-    await Product.insertMany (sampleProducts)
-    await Category.insertMany(sampleCategories)
-    await CurrencyRate.insertMany(currencyRate)
+    // await Product.insertMany (sampleProducts)
+    // await Category.insertMany(sampleCategories)
+    // await CurrencyRate.insertMany(currencyRate)
     console.log('Data imported')
     process.exit()
   } catch (error) {
@@ -43,11 +43,11 @@ const importData = async () => {
 }
 const destroyData = async () => {
   try {
-    await Order.deleteMany()
-    await Product.deleteMany()
+    // await Order.deleteMany()
+    // await Product.deleteMany()
     await User.deleteMany()
-    await Category.deleteMany()
-    await CurrencyRate.deleteMany()
+    // await Category.deleteMany()
+    // await CurrencyRate.deleteMany()
     
     console.log('Data destroyed')
     process.exit()

@@ -2,6 +2,8 @@ const Brand = require("../models/brandModel")
 const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const path = require("path")
+const asyncHandler = require('express-async-handler')
+
 
 const {  
   removeImage, 
@@ -22,19 +24,15 @@ const storage = multer.diskStorage({
 
 const sortOpt = (arr) => arr.sort((a, b) => (a.name > b.name ? 1 : -1))
 
-exports.getAllBrands = async (req, res) => {
-  try {
+exports.getAllBrands = asyncHandler(async (req, res) => { 
     const brands = await Brand.find()
-    res.status(200).json({ brands })
-  } catch (error) {
-    res.status(500).json({ msg: error.message })
-  }
-}
+    res.status(200).json({ brands }) 
+})
 
 exports.addBrand = [
   multer({ storage }).single("image"),
-  async (req, res) => {
-    try {      
+  asyncHandler(
+     async (req, res) => {         
       const {name,colors,sizes,heights} = JSON.parse(req.body.values)      
       const slug = req.body.slug || getSlug(name)
       const brand = new Brand({
@@ -47,18 +45,18 @@ exports.addBrand = [
       })
 
       const data = await brand.save()
-      res.status(200).json(data)
-    } catch (error) {
-      res.status(500).json({ msg: error.message })
-    }
-  },
+      res.status(200).json(data)   
+  }
+  )
+ 
 ]
 
 
 exports.updateBrand = [
   multer({ storage }).single("image"),
-  async (req, res) => {
-    try {
+  asyncHandler(
+    async (req, res) => {
+    
       const { name, colors, sizes, heights,_id } =JSON.parse(req.body.values) 
       const  imageClientPath  = req.body.imageClientPath      
       const slug = req.body.slug || getSlug(name)
@@ -87,23 +85,18 @@ exports.updateBrand = [
         }
       )
 
-      res.status(200).json({ msg: "Success" })
-    } catch (error) {
-      res.status(500).json({ msg: error.message })
-    }
-  },
+      res.status(200).json({ message: "Success" })
+    
+  }
+  )
+  
 ]
 
-exports.deleteBrand = async (req, res) => {
-  try {
+exports.deleteBrand =asyncHandler( async (req, res) => {  
     const { id } = req.params
     const brand = await Brand.findOne({ _id: id })
     const image = brand.image
     await removeImage(image)
     await Brand.deleteOne({ _id: id })
-
-    res.status(200).json({ message: "success" })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-}
+    res.status(200).json({ message: "success" }) 
+})
