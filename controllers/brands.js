@@ -9,7 +9,7 @@ const {
   removeImage, 
   updateImageToSlug  
 } = require("../utils/handleImages")
-const { nextTick } = require("process")
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

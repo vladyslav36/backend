@@ -4,6 +4,7 @@ const multer = require("multer")
 const path = require("path")
 const { removeImage, updateImageToSlug } = require("../utils/handleImages")
 const asyncHandler=require('express-async-handler')
+const { setQntProducts } = require("../utils/setQntProducts")
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -50,6 +51,7 @@ exports.addCategory = [
       })
 
       await category.save()
+      setQntProducts()
       res.status(200).json({ message: "Категория успешно добавлена" })
     
   }
@@ -96,6 +98,7 @@ exports.updateCategory = [
           slug,
         }
       )
+      setQntProducts()
       res.status(200).json({ message: "Категория успешно изменена" })    
   }
   )
@@ -107,6 +110,7 @@ exports.deleteCategory = asyncHandler(
     const category = await Category.findOne({ _id: id })
     await removeImage(category.image)
     await Category.deleteOne({ _id: id })
+    setQntProducts()
     res.status(200).json({ message: "success" }) 
 }
 ) 

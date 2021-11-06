@@ -12,7 +12,9 @@ const currencyRateRouter = require('./routes/currencyRate')
 const brandsRouter=require('./routes/brands')
 const uploadRouter = require('./routes/upload')
 const cartRouter = require('./routes/cart')
-const userRouter=require('./routes/user')
+const userRouter = require('./routes/user')
+const searchRouter = require('./routes/search')
+
 
 
 
@@ -37,7 +39,8 @@ app.use('/api/categories', categoriesRouter)
 app.use('/api/cart',cartRouter)
 app.use('/api/currencyrate', currencyRateRouter)
 app.use('/api/brands', brandsRouter)
-app.use('/api/upload',uploadRouter)
+app.use('/api/upload', uploadRouter)
+app.use('/api/search',searchRouter)
 
 app.use(notFound)
 app.use(errorHandler)

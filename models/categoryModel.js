@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 
+
 const CategorySchema = mongoose.Schema({
   name: String,
   slug:String,
@@ -12,11 +13,13 @@ const CategorySchema = mongoose.Schema({
   },
   parentCategory: { type: String, default: '' },
   
+  qntProducts:{type:Number,default:0},
   level: { type: Number, default: 0 }
   
 }, {
   timestamps:true
 })
+
 
 const Category = mongoose.model('Category', CategorySchema)
 

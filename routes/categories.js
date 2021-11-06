@@ -6,10 +6,10 @@ const {getAllCategories,addCategory,updateCategory,deleteCategory } =require('..
 router
   .route('/')
   .get(getAllCategories)
-  .post(protect,addCategory)
-  .put(protect,updateCategory)
+  .post(addCategory)
+  .put(updateCategory)
 
 router.route('/:id')
-  .delete(protect,deleteCategory)
+  .delete(deleteCategory)
 
 module.exports=router

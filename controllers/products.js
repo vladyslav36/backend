@@ -15,6 +15,7 @@ const {
   renameImages,
 } = require("../utils/handleImages")
 const asyncHandler = require("express-async-handler")
+const { setQntProducts } = require("../utils/setQntProducts")
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -53,20 +54,32 @@ exports.getProductsNames = asyncHandler(async (req, res, next) => {
     brands,
   })
 })
-exports.getSearchProducts = asyncHandler(async (req,    
-    res,
-    
-  ) => {
-const  { product = "", brand = "", category = "", model = "" }=req.query
-    const products = await Product.find({
-      name: { $regex: `${product}` },
-      model: { $regex: `${model}` },
-      brand: { $regex: `${brand}` },
-      category: { $regex: `${category}` },
-    })
+exports.getSearchProducts = asyncHandler(async (req,res) => {
+  const { string } = req.query
+  const products = await Product.find({
+    $or: [
+      { name: { $regex: string, $options:'i' } },
+      { model: { $regex: string,$options:'i' } }
+  ]}).limit(10)
 
-    res.status(200).json({ products })
+  res.status(200).json({products})
+  
   }
+)
+exports.getEditSearchProducts = asyncHandler(async (req, res) => {
+  const { model, category, brand, name } = req.query
+  // удаляем пустышки
+  let searchObj = {}
+  for (let key in req.query) {
+    if (req.query[key]) searchObj[key]=req.query[key]
+  }
+  const products = await Product.find(searchObj).limit(10)
+
+  res.status(200).json({products})
+  
+  
+}
+  
 )
 exports.getProduct = asyncHandler(
   async (req, res, next) => {
@@ -136,7 +149,7 @@ exports.addProducts = [
         currencyValue,
       })
       const data = await product.save()
-
+setQntProducts()
       res.status(200).json({ data })
     
   }
@@ -260,7 +273,7 @@ exports.updateProduct = [
           currencyValue,
         }
       )
-
+setQntProducts()
       res.status(200).json({ msg: "Товар успешно обновлен" })
     
   },
@@ -286,7 +299,7 @@ exports.deleteProduct = asyncHandler(
     )
 
     await Product.deleteOne({ _id: id })
-
+setQntProducts()
     res.status(200).json({ message: "success" })
   
 }
