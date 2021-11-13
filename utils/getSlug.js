@@ -3,6 +3,6 @@ const slugify=require('slugify')
 
 
 exports.getSlug = (string) => {
-  return `${slugify(string,{lower:true})}-${uniqueSlug()}`
+  return `${slugify(string.replace(/[-' ']/g,''),{lower:true})}-${uniqueSlug()}`
   
 }

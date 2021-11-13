@@ -4,7 +4,7 @@ const Order =require('./models/orderModel')
 const User = require('./models/userModel')
 const Category = require('./models/categoryModel')
 const CurrencyRate = require('./models/currencyRateModel')
-
+const fs=require('fs-extra')
 const dotenv =require('dotenv') 
 const products =require('./data/products') 
 const users =require('./data/users') 
@@ -19,8 +19,8 @@ const importData = async () => {
   try {
     // await Order.deleteMany()
     // await Product.deleteMany()
-    await User.deleteMany()
-    // await Category.deleteMany()
+    // await User.deleteMany()
+    await Category.deleteMany()
     // await CurrencyRate.deleteMany()
     const createdUsers = await User.insertMany(users)
     
@@ -45,10 +45,10 @@ const destroyData = async () => {
   try {
     // await Order.deleteMany()
     // await Product.deleteMany()
-    await User.deleteMany()
-    // await Category.deleteMany()
+    // await User.deleteMany()
+    await Category.deleteMany()
     // await CurrencyRate.deleteMany()
-    
+    await fs.emptyDir('./upload/images/category')
     console.log('Data destroyed')
     process.exit()
   } catch (error) {

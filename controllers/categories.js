@@ -33,10 +33,10 @@ exports.addCategory = [
         JSON.parse(req.body.values)
 
       // Формирование level
-      const level =
-        parentCategoryId === null
-          ? 0
-          : (await Category.findById({ _id: parentCategoryId })).level + 1
+      // const level =
+      //   parentCategoryId === null
+      //     ? 0
+      //     : (await Category.findById({ _id: parentCategoryId })).level + 1
 
       const slug = req.body.slug || getSlug(name)
 
@@ -46,7 +46,7 @@ exports.addCategory = [
         parentCategoryId,
         description,
         image: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : "",
-        level,
+        // level,
         slug,
       })
 
@@ -67,10 +67,10 @@ exports.updateCategory = [
       const imageClientPath = req.body.imageClientPath
       const slug = req.body.slug || getSlug(name)
 
-      const level =
-        parentCategoryId === null
-          ? 0
-          : (await Category.findById({ _id: parentCategoryId })).level + 1
+      // const level =
+      //   parentCategoryId === null
+      //     ? 0
+      //     : (await Category.findById({ _id: parentCategoryId })).level + 1
 
       const category = await Category.findOne({ _id })
 
@@ -94,7 +94,7 @@ exports.updateCategory = [
           parentCategoryId,
           description,
           image: imagePath,
-          level,
+          // level,
           slug,
         }
       )

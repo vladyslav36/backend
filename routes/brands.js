@@ -5,10 +5,10 @@ const { getAllBrands, addBrand, updateBrand, deleteBrand }=require('../controlle
 
 router.route('/')
   .get(getAllBrands)
-  .post(protect, addBrand)
-  .put(protect,updateBrand)
+  .post( addBrand)
+  .put(updateBrand)
 
 router.route('/:id')
-  .delete(protect,deleteBrand)
+  .delete(deleteBrand)
 
   module.exports=router

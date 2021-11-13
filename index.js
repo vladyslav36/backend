@@ -19,6 +19,7 @@ const searchRouter = require('./routes/search')
 
 
 
+
 dotenv.config({ path: './config/.env' })
 process.env.ROOT_NAME = path.dirname(__filename)
 
