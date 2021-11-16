@@ -22,7 +22,14 @@ exports.getAllCategories = asyncHandler(
     const categories = await Category.find()   
     res.status(200).json({ categories})  
 }
-) 
+)
+
+exports.getBrands = asyncHandler(
+  async (req, res) => {
+    const categories = await Category.find({ parentCategoryId: null })
+    res.status(200).json({categories})
+  }
+)
 
 exports.addCategory = [
   multer({ storage }).single("image"),
