@@ -26,8 +26,6 @@ router.route("/edit_search").get(getEditSearchProducts)
 
 router.route("/category/:id").get(getProductsCategoryId)
 
-router.route("/names").get(getProductsNames)
-
 router.route("/showcase").get(getShowcaseProducts)
 
 router.route("/:slug").get(getProduct)

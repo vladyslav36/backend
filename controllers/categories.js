@@ -26,7 +26,7 @@ exports.getAllCategories = asyncHandler(
 
 exports.getBrands = asyncHandler(
   async (req, res) => {
-    const categories = await Category.find({ parentCategoryId: null })
+    const categories=await Category.find({parentCategoryId:null})
     res.status(200).json({categories})
   }
 )
@@ -39,11 +39,7 @@ exports.addCategory = [
       const { name, parentCategory, parentCategoryId, description } =
         JSON.parse(req.body.values)
 
-      // Формирование level
-      // const level =
-      //   parentCategoryId === null
-      //     ? 0
-      //     : (await Category.findById({ _id: parentCategoryId })).level + 1
+      
 
       const slug = req.body.slug || getSlug(name)
 
@@ -53,7 +49,7 @@ exports.addCategory = [
         parentCategoryId,
         description,
         image: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : "",
-        // level,
+        
         slug,
       })
 
@@ -74,10 +70,7 @@ exports.updateCategory = [
       const imageClientPath = req.body.imageClientPath
       const slug = req.body.slug || getSlug(name)
 
-      // const level =
-      //   parentCategoryId === null
-      //     ? 0
-      //     : (await Category.findById({ _id: parentCategoryId })).level + 1
+      
 
       const category = await Category.findOne({ _id })
 
@@ -101,7 +94,7 @@ exports.updateCategory = [
           parentCategoryId,
           description,
           image: imagePath,
-          // level,
+          
           slug,
         }
       )

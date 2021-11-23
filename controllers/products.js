@@ -1,7 +1,7 @@
 const { findOne } = require("../models/productModel")
 const Product = require("../models/productModel")
 const Category = require("../models/categoryModel")
-const Brand = require("../models/brandModel")
+
 const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const fs = require("fs-extra")
@@ -42,16 +42,7 @@ exports.getProductsCategoryId = asyncHandler(async (req, res, next) => {
   res.status(200).json({ products })
 })
 
-exports.getProductsNames = asyncHandler(async (req, res, next) => {
-  const products = await Product.find({}, { name: 1, model: 1, imagesSm: 1 })
-  const categories = await Category.find({}, { name: 1 })
-  const brands = await Brand.find({}, { name: 1 })
-  res.status(200).json({
-    products,
-    categories,
-    brands,
-  })
-})
+
 exports.getSearchProducts = asyncHandler(async (req, res) => {
   const { string } = req.query
   const products = await Product.find({
@@ -86,17 +77,13 @@ exports.addProducts = [
   asyncHandler(async (req, res, next) => {
     const {
       name,
-      model,
-      brand,
-      brandId,
+      model,      
       category,
-      categoryId,
-      colors,
-      sizes,
-      heights,
+      categoryId,      
       isShowcase,
       isInStock,
       description,
+      options,
       price,
       retailPrice,
       currencyValue,
@@ -118,21 +105,17 @@ exports.addProducts = [
 
     const product = new Product({
       name,
-      model,
-      brand,
-      brandId,
+      model,      
       slug,
       images,
       imagesMd,
       imagesSm,
       category,
-      categoryId,
-      colors: sortOpt(colors),
-      sizes: sortOpt(sizes),
-      heights: sortOpt(heights),
+      categoryId,      
       description,
       isShowcase,
       isInStock,
+      options,
       price,
       retailPrice,
       currencyValue,
@@ -149,8 +132,7 @@ exports.updateProduct = [
       _id,
       name,
       model,
-      brand,
-      brandId,
+      
       category,
       categoryId,
       colors,
@@ -240,8 +222,7 @@ exports.updateProduct = [
       {
         name,
         model,
-        brand,
-        brandId,
+        
         slug,
         images,
         imagesMd,
