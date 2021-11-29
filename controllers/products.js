@@ -16,6 +16,7 @@ const {
 const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, `upload/images/product/`)
@@ -66,9 +67,8 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
   res.status(200).json({ products })
 })
 exports.getProduct = asyncHandler(async (req, res, next) => {
-  const { slug } = req.params
-
-  const product = await Product.findOne({ slug })
+  const { slug } = req.params   
+  const product = await Product.findOne({ slug })  
   res.status(200).json({ product })
 })
 exports.addProducts = [
@@ -77,7 +77,8 @@ exports.addProducts = [
   asyncHandler(async (req, res, next) => {
     const {
       name,
-      model,      
+      model,
+      brand,
       category,
       categoryId,      
       isShowcase,
@@ -105,7 +106,8 @@ exports.addProducts = [
 
     const product = new Product({
       name,
-      model,      
+      model,
+      brand,
       slug,
       images,
       imagesMd,
@@ -132,7 +134,7 @@ exports.updateProduct = [
       _id,
       name,
       model,
-      
+      brand,
       category,
       categoryId,
       options,
@@ -161,7 +163,7 @@ exports.updateProduct = [
         // если ссылка на картинку осталась прежняя а название продукта изменилось,
         // этот блок создает новый слаг, состоящий из нового имени и старой второй части слага,
         // для всех трех картинок, вычисляет старый полный путь, новый полный путь и переименовывает все картинки
-        console.log(item,slug)
+       
         const newSlug = `${slug.split("-")[0]}-${
           path.parse(item).name.split("-")[1]
         }`
@@ -219,7 +221,8 @@ exports.updateProduct = [
       { _id },
       {
         name,
-        model,        
+        model,
+        brand,
         slug,
         images,
         imagesMd,
