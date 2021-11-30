@@ -67,6 +67,7 @@ const ProductSchema = mongoose.Schema(
           default:''
         }
       }],
+      
       isChangePrice: {
         type: Boolean,
         default: false
