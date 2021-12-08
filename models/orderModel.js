@@ -1,51 +1,38 @@
 const mongoose =require( 'mongoose')
 
-const orderSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'User'
+const orderSchema = mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default:null
+    },
+    orderItems: [
+      {
+        name: { type: String, required: true },        
+        options: { type: Object },        
+        currencyValue: { type: String, required: true },
+        
+      },
+    ],
+    delivery: {
+      name: String,
+      surname: String,
+      phone: String,
+      city: String,
+      carrier: String,
+      branch: String,
+      pickup: { type: Boolean, default: true },
+      prepaid: { type: Boolean, default: true }
+    },
+    totalQnt: String,
+    totalAmount: String,
+    count:{type:Number,default:0}
   },
-  orderItems: [
-    {
-      name:{type:String,required:true},
-      qty:{type:Number,required:true},
-      image:{type:String,required:true},
-      price:{type:String,required:true,default:0.0},
-      currencyValue: { type: String, required: true },
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref:'Product'
-      }
-    }
-  ],
-  shippingAddress: {    
-    address: { type: String },
-    city: { type: String,required:true },
-    phoneNumber: { type: String, required: true },
-    delliveryCompany: { type: String, required: true },
-    branchNumber:{type:String}
-  },
-  paymentMethod: {
-    type: String,
-    required:true
-  },
-  totalPrice: {
-    type: Number,
-    required: true,
-    default:0.0
-  },
-  isPaid: {
-    type: Boolean,
-    required: true,
-    default:false
-  },
-  paidAt: {
-    type:Date
+  {
+    timestamps: true,
   }
-}, {
-  timestamps:true
-})
+)
 
 const Order = mongoose.model('Order', orderSchema)
 module.exports = Order

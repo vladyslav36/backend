@@ -8,10 +8,10 @@ const {
   deleteProduct,
   getProduct,
   updateProduct,
-  getSearchProducts,
-  getProductsNames,
+  getSearchProducts,  
   getProductsCategoryId,
   getEditSearchProducts,
+  
 } = require("../controllers/products")
 
 router

@@ -16,7 +16,12 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    brand:String,
+    brand: String,
+    brandId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      dafault:null
+    },
     images: [{ type: String }],
     imagesMd: [{ type: String }],
     imagesSm: [{ type: String }],

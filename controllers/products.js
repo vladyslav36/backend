@@ -44,6 +44,7 @@ exports.getProductsCategoryId = asyncHandler(async (req, res, next) => {
 })
 
 
+
 exports.getSearchProducts = asyncHandler(async (req, res) => {
   const { string } = req.query
   const products = await Product.find({
@@ -79,6 +80,7 @@ exports.addProducts = [
       name,
       model,
       brand,
+      brandId,
       category,
       categoryId,      
       isShowcase,
@@ -108,6 +110,7 @@ exports.addProducts = [
       name,
       model,
       brand,
+      brandId,
       slug,
       images,
       imagesMd,
@@ -135,6 +138,7 @@ exports.updateProduct = [
       name,
       model,
       brand,
+      brandId,
       category,
       categoryId,
       options,
@@ -223,6 +227,7 @@ exports.updateProduct = [
         name,
         model,
         brand,
+        brandId,
         slug,
         images,
         imagesMd,
