@@ -7,11 +7,13 @@ const optionsSchema = mongoose.Schema({
     default: null,
     ref: 'Category'
   },
-  options:[],
+  options: {},
 },
   {
+    minimize: false,
   timestamps:true
-  })
+  },
+)
 
 
 const Options = mongoose.model('Options', optionsSchema)

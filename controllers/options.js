@@ -22,8 +22,8 @@ exports.getOptions = asyncHandler(async (req, res) => {
 })
 exports.getOptionById = asyncHandler(async (req, res) => {
   const { id }=req.params
-  const brand = await Options.findById(id)
-  res.status(200).json({ brand })
+  const brandOption = await Options.findById(id)  
+  res.status(200).json({ brandOption })
 })
 exports.getOptionByBrandId = asyncHandler(async (req, res) => {
   const { id } = req.params
@@ -32,28 +32,32 @@ exports.getOptionByBrandId = asyncHandler(async (req, res) => {
 })
 exports.updateOptions = asyncHandler(async (req, res) => {
   const { _id, options } = req.body
+  const brandOption=await Options.findById(_id)
   // Обновление всех опций всех товаров у которых соответствует brandId
-  const option = await Options.findById(_id)
-  const optionsBrandNames=options.map(opt=>opt.name)
-  const products = await Product.find({ brandId: option.brandId })
-  // для этого сначала из product.options удаляем все опции которых нет в бренде,
-  // затем берем из бренда новые опции и на их основе вставляем в product.options
-  // объекты новых опций. И так перебираем все товары с brandId
-  Promise.all(
-    products.map(async (item) => {
-    let newOptions = item.options.filter(opt => optionsBrandNames.includes(opt.name))
-    const newOptionsNames = newOptions.map(opt => opt.name)
-    const nameToAdd = optionsBrandNames.filter(name => !newOptionsNames.includes(name))
-    newOptions = [...newOptions, ...nameToAdd.map(name => ({
-      isChangePrice: false,
-      name: name,
-      values:[]
-    }))]
-    await Product.updateOne({ _id: item._id },{options:newOptions})    
-    })
-  ) 
+
+  const products = await Product.find({ brandId: brandOption.brandId })
+  await Promise.all(
+    products.map(async product => {    
+     const newOptions={...options}
+    if (Object.keys(newOptions).length) {
+      Object.keys(newOptions).forEach(option => {
+      if (typeof product[option] === 'object') {
+        newOptions[option].isChangePrice = product[option].isChangePrice
+        Object.keys(newOptions[option].values).forEach(value => {
+          if (typeof product[option].values[value] === 'object') {
+            newOptions[option].values[value].price=product[option].values[value].price
+            newOptions[option].values[value].checked=product[option].values[value].checked
+          }
+        })
+      } 
+    } )
+    }
+    await Product.updateOne({ _id: product._id },{options:newOptions})
+  })
+ ) 
   
   const data = await Options.updateOne({ _id }, { options })
+  
   res.status(200).json({data})
 })
 

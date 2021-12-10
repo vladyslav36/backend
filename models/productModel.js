@@ -19,8 +19,8 @@ const ProductSchema = mongoose.Schema(
     brand: String,
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-      dafault:null
+      ref: "Category",
+      dafault: null,
     },
     images: [{ type: String }],
     imagesMd: [{ type: String }],
@@ -37,7 +37,6 @@ const ProductSchema = mongoose.Schema(
       type: String,
     },
 
-    
     isInStock: {
       type: Boolean,
       default: true,
@@ -60,28 +59,11 @@ const ProductSchema = mongoose.Schema(
       required: true,
       default: "UAH",
     },
-    options: [{
-      name: String,
-      values: [{
-        name: {
-          type: String,
-          default:''
-        },
-        price: {
-          type: String,
-          default:''
-        }
-      }],
-      
-      isChangePrice: {
-        type: Boolean,
-        default: false
-      }
-     }],      
-    
+    options: Object,
   },
   {
     timestamps: true,
+    minimize: false,
   }
 )
 
