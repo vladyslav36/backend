@@ -1,6 +1,6 @@
 const mongoose=require('mongoose')
 
-const optionsSchema = mongoose.Schema({
+const optionsSchema =mongoose.Schema({
   name: String,
   brandId: {
     type: mongoose.Schema.Types.ObjectId,

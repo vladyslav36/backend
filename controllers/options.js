@@ -38,15 +38,17 @@ exports.updateOptions = asyncHandler(async (req, res) => {
   const products = await Product.find({ brandId: brandOption.brandId })
   await Promise.all(
     products.map(async product => {    
-     const newOptions={...options}
+      const newOptions = { ...options }
+      
     if (Object.keys(newOptions).length) {
       Object.keys(newOptions).forEach(option => {
-      if (typeof product[option] === 'object') {
-        newOptions[option].isChangePrice = product[option].isChangePrice
+        
+        if (typeof product.options[option] === 'object') {        
+        newOptions[option].isChangePrice = product.options[option].isChangePrice
         Object.keys(newOptions[option].values).forEach(value => {
-          if (typeof product[option].values[value] === 'object') {
-            newOptions[option].values[value].price=product[option].values[value].price
-            newOptions[option].values[value].checked=product[option].values[value].checked
+          if (typeof product.options[option].values[value] === 'object') {
+            newOptions[option].values[value].price=product.options[option].values[value].price
+            newOptions[option].values[value].checked=product.options[option].values[value].checked
           }
         })
       } 

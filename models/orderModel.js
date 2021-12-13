@@ -12,7 +12,8 @@ const orderSchema = mongoose.Schema(
         name: { type: String, required: true },        
         options: { type: Object },        
         currencyValue: { type: String, required: true },
-        
+        price: String,
+        qnt:String
       },
     ],
     delivery: {
