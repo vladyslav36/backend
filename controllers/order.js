@@ -20,7 +20,7 @@ exports.getOrderByUserId = asyncHandler(async (req, res) => {
   const { id } = req.params
   
   const orders = await Order.find({ userId: id })
-  console.log(orders)
+  
   res.status(200).json({orders})
   }    
 )

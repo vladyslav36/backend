@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { protect } = require("../middleware/auth")
+const { protect, protectAdmin } = require("../middleware/auth")
 const {
   getAllProducts,
   getShowcaseProducts,
@@ -17,8 +17,8 @@ const {
 router
   .route("/")
   .get(getAllProducts)
-  .post( addProducts)
-  .put( updateProduct)
+  .post(protect,protectAdmin, addProducts)
+  .put(protect,protectAdmin, updateProduct)
 
 router.route("/search").get(getSearchProducts)
 
@@ -30,6 +30,6 @@ router.route("/showcase").get(getShowcaseProducts)
 
 router.route("/:slug").get(getProduct)
 
-router.route("/:id").delete( deleteProduct)
+router.route("/:id").delete(protect,protectAdmin, deleteProduct)
 
 module.exports = router

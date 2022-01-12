@@ -49,6 +49,28 @@ exports.registerUser = asyncHandler(async (req, res) => {
   
   
 })
+exports.updateUser = asyncHandler(async (req, res) => {
+  const { name, email, password,id } = req.body
+  const user = await User.findById(id)
+  user.name = name
+  user.email = email
+  if (password) {
+    user.password=password
+  }
+  
+  const newUser=await user.save()
+    
+  
+  
+  res.status(200).json({
+    _id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    isAdmin: newUser.isAdmin,
+    token:generateToken(newUser._id)
+  })
+  
+})
 exports.getUserProfile = asyncHandler(async (req, res) => {
   const user=await User.findById(req.user._id)
   if (user) {

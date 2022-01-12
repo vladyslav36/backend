@@ -10,8 +10,6 @@ const { getSlug } = require("../utils/getSlug")
 const Category = require("../models/categoryModel")
 const dotenv = require("dotenv")
 const connectDb = require("../config/db")
-const Downloader = require("nodejs-file-downloader")
-const urlExists = require("url-exists-async-await")
 const download = require("image-downloader")
 
 const path = require("path")
