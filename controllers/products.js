@@ -17,6 +17,7 @@ const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
 
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, `upload/images/product/`)
@@ -126,6 +127,7 @@ exports.addProducts = [
       currencyValue,
     })
     const data = await product.save()
+    
     setQntProducts()
     res.status(200).json({ data })
   }),
@@ -243,6 +245,7 @@ exports.updateProduct = [
         currencyValue,
       }
     )
+    
     setQntProducts()
     res.status(200).json({ msg: "Товар успешно обновлен" })
   }),

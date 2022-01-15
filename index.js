@@ -14,7 +14,8 @@ const cartRouter = require('./routes/cart')
 const userRouter = require('./routes/user')
 const searchRouter = require('./routes/search')
 const optionsRouter=require('./routes/options')
-const orderRouter=require('./routes/order')
+const orderRouter = require('./routes/order')
+
 
 
 
@@ -42,7 +43,8 @@ app.use('/api/currencyrate', currencyRateRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/search', searchRouter)
 app.use('/api/options', optionsRouter)
-app.use('/api/order',orderRouter)
+app.use('/api/order', orderRouter)
+
 
 app.use(notFound)
 app.use(errorHandler)
