@@ -10,6 +10,7 @@ const optionsSchema =mongoose.Schema({
   options: {},
 },
   {
+    
     minimize: false,
   timestamps:true
   },

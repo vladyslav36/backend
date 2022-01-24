@@ -1,0 +1,26 @@
+[
+{"type":"header","version":"4.9.7","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"karmenkh_ocar314"},
+{"type":"table","name":"ocst_option","database":"karmenkh_ocar314","data":
+[
+{"option_id":"22","type":"select","sort_order":"1"},
+{"option_id":"20","type":"select","sort_order":"1"},
+{"option_id":"18","type":"select","sort_order":"5"},
+{"option_id":"16","type":"select","sort_order":"0"},
+{"option_id":"21","type":"select","sort_order":"1"},
+{"option_id":"13","type":"select","sort_order":"1"},
+{"option_id":"14","type":"select","sort_order":"2"},
+{"option_id":"17","type":"select","sort_order":"4"},
+{"option_id":"23","type":"select","sort_order":"1"},
+{"option_id":"24","type":"select","sort_order":"0"},
+{"option_id":"25","type":"select","sort_order":"0"},
+{"option_id":"26","type":"select","sort_order":"2"},
+{"option_id":"27","type":"select","sort_order":"0"},
+{"option_id":"28","type":"select","sort_order":"0"},
+{"option_id":"29","type":"select","sort_order":"0"},
+{"option_id":"30","type":"select","sort_order":"0"},
+{"option_id":"31","type":"select","sort_order":"0"},
+{"option_id":"32","type":"select","sort_order":"0"}
+]
+}
+]

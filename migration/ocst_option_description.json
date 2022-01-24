@@ -1,0 +1,26 @@
+[
+{"type":"header","version":"4.9.7","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"karmenkh_ocar314"},
+{"type":"table","name":"ocst_option_description","database":"karmenkh_ocar314","data":
+[
+{"option_id":"21","language_id":"1","name":"Цвет (Conte)"},
+{"option_id":"18","language_id":"1","name":"Рост-объем"},
+{"option_id":"20","language_id":"1","name":"Цвет (Diwari)"},
+{"option_id":"16","language_id":"1","name":"Упаковка"},
+{"option_id":"17","language_id":"1","name":"Объем бедер"},
+{"option_id":"13","language_id":"1","name":"Цвет (Ника)"},
+{"option_id":"14","language_id":"1","name":"Размер"},
+{"option_id":"22","language_id":"1","name":"Цвет (Брест)"},
+{"option_id":"23","language_id":"1","name":"Цвет (ЛХ)"},
+{"option_id":"24","language_id":"1","name":"Цвет (KLD)"},
+{"option_id":"25","language_id":"1","name":"Цвет (Хатка)"},
+{"option_id":"26","language_id":"1","name":"Цвет (Классик)"},
+{"option_id":"27","language_id":"1","name":"Рост"},
+{"option_id":"28","language_id":"1","name":"Цвет (Mio Senso)"},
+{"option_id":"29","language_id":"1","name":"Цвет (Anna)"},
+{"option_id":"30","language_id":"1","name":"Цвет (Marilyn)"},
+{"option_id":"31","language_id":"1","name":"Цвет (Knittex)"},
+{"option_id":"32","language_id":"1","name":"Цвет (Katamino)"}
+]
+}
+]

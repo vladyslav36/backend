@@ -6,7 +6,8 @@ const CategorySchema = mongoose.Schema({
   name: String,
   slug:String,
   description: { type: String, default: '' },
-  image:String,
+  image: String,
+  options: {},
   parentCategoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',

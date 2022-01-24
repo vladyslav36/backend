@@ -19,8 +19,15 @@ const storage = multer.diskStorage({
 
 exports.getAllCategories = asyncHandler(
   async (req, res, next) => {  
-    const categories = await Category.find()   
+    const categories = await Category.find()
     res.status(200).json({ categories})  
+}
+)
+exports.getCategoryById = asyncHandler(
+  async (req, res, next) => { 
+    const { id } = req.params    
+    const category = await Category.findById(id)
+    res.status(200).json({ category})  
 }
 )
 

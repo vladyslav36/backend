@@ -1,9 +1,9 @@
 const Product = require("../models/productModel")
 const Category = require("../models/categoryModel")
 const asyncHandler = require("express-async-handler")
-const idToString = (id) => {
-  return id === null ? "" : id.toString()
-}
+
+const { idToString } =require('./idToString')
+
 exports.setQntProducts = asyncHandler(async () => {
   const categories = await Category.find()
   const products = await Product.find()

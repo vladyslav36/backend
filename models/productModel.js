@@ -20,7 +20,7 @@ const ProductSchema = mongoose.Schema(
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-      dafault: null,
+      default: null,
     },
     images: [{ type: String }],
     imagesMd: [{ type: String }],
@@ -59,7 +59,10 @@ const ProductSchema = mongoose.Schema(
       required: true,
       default: "UAH",
     },
-    options: Object,
+    options: {
+      type: Object,
+      default: {}
+    },
   },
   {
     timestamps: true,
