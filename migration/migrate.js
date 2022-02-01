@@ -327,18 +327,22 @@ const migrateOptions = async () => {
         return options
       }
 
-      const saveOptions = async (brand, options) => {
-        const option = new Options({
-          brandId: brand._id,
-          name: brand.name,
-          options: {},
-        })
-        // Двойное сохранение с целью возможности сохранения ключа с точкой
-        await option.save()
-        option.options = options
-        await option.save()
-      }
+      // const saveOptions = async (brand, options) => {
+      //   const option = new Options({
+      //     brandId: brand._id,
+      //     name: brand.name,
+      //     options: {},
+      //   })
+      //   // Двойное сохранение с целью возможности сохранения ключа с точкой
+      //   await option.save()
+      //   option.options = options
+      //   await option.save()
+      // }
 
+      const saveOptions = async (brand, options) => {
+        await Category.updateOne({ _id: brand._id },{options})
+        
+      }
       // options Conte
       if (brand.name === "Conte") {
         const options = getOptions({ Цвет: 21, Размер: 14 })

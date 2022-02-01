@@ -58,13 +58,13 @@ exports.getSearchProducts = asyncHandler(async (req, res) => {
   res.status(200).json({ products })
 })
 exports.getEditSearchProducts = asyncHandler(async (req, res) => {
-  const { model, category, brand, name } = req.query
+  
   // удаляем пустышки
   let searchObj = {}
   for (let key in req.query) {
     if (req.query[key]) searchObj[key] = req.query[key]
   }
-  const products = await Product.find(searchObj).limit(10)
+  const products = await Product.find(searchObj).limit(20)
 
   res.status(200).json({ products })
 })
@@ -223,7 +223,7 @@ exports.updateProduct = [
       imagesMd.push(md)
       imagesSm.push(sm)
     })
-
+console.log(options['Цвет'])
     await Product.updateOne(
       { _id },
       {
@@ -248,7 +248,7 @@ exports.updateProduct = [
     )
     
     setQntProducts()
-    res.status(200).json({ msg: "Товар успешно обновлен" })
+    res.status(200).json({ message: "Товар успешно обновлен" })
   }),
 ]
 exports.deleteProduct = asyncHandler(async (req, res, next) => {

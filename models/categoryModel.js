@@ -7,7 +7,10 @@ const CategorySchema = mongoose.Schema({
   slug:String,
   description: { type: String, default: '' },
   image: String,
-  options: {},
+  options: {
+    type: Object,
+    default: {}
+  },
   parentCategoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -19,6 +22,7 @@ const CategorySchema = mongoose.Schema({
   // level: { type: Number, default: 0 }
   
 }, {
+  minimize:false,
   timestamps:true
 })
 

@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { protect, protectAdmin }=require('../middleware/auth')
-const {getAllCategories,addCategory,updateCategory,deleteCategory,getBrands,getCategoryById } =require('../controllers/categories')
+const {getAllCategories,addCategory,updateCategory,deleteCategory,getBrands,getCategoryById, addOptions, deleteOption } =require('../controllers/categories')
 
 router
   .route('/')
@@ -15,6 +15,8 @@ router
 
 router.route('/:id')
   .get(getCategoryById)
-  .delete(protect,protectAdmin, deleteCategory)
+  .delete(protect, protectAdmin, deleteCategory)
+  
+  // router.route('/options/:id').post(addOptions).delete(deleteOption)
 
 module.exports=router

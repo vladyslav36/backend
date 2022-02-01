@@ -43,7 +43,7 @@ exports.addCategory = [
   asyncHandler(
     async (req, res, next) => {
     
-      const { name, parentCategory, parentCategoryId, description } =
+      const { name, parentCategory, parentCategoryId, description,options } =
         JSON.parse(req.body.values)
 
       
@@ -56,7 +56,7 @@ exports.addCategory = [
         parentCategoryId,
         description,
         image: req.file ? `/${req.file.path.replace(/\\/g, "/")}` : "",
-        
+        options,
         slug,
       })
 
@@ -72,7 +72,7 @@ exports.updateCategory = [
   multer({ storage }).single("image"),
   asyncHandler(
     async (req, res) => {    
-      const { name, parentCategory, parentCategoryId, description, _id } =
+      const { name, parentCategory, parentCategoryId, description, _id,options } =
         JSON.parse(req.body.values)
       const imageClientPath = req.body.imageClientPath
       const slug = req.body.slug || getSlug(name)
@@ -101,7 +101,7 @@ exports.updateCategory = [
           parentCategoryId,
           description,
           image: imagePath,
-          
+          options,
           slug,
         }
       )
@@ -121,3 +121,4 @@ exports.deleteCategory = asyncHandler(
     res.status(200).json({ message: "success" }) 
 }
 ) 
+
