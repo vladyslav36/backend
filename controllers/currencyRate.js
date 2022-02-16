@@ -8,7 +8,7 @@ exports.getCurrencyRate = asyncHandler(async (req, res, next) => {
 
 exports.addCurrencyRate = asyncHandler(async (req, res, next) => {
   const { USD, EUR } = req.body
-  const currencyRate = await CurrencyRate.findOne()
+  const currencyRate = await CurrencyRate.findOne() || {}  
   currencyRate.USD = USD
   currencyRate.EUR = EUR
   const newRate = await currencyRate.save()

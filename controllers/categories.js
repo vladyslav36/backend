@@ -1,4 +1,5 @@
 const Category = require("../models/categoryModel")
+const Product=require('../models/productModel')
 const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const path = require("path")
@@ -106,6 +107,39 @@ exports.updateCategory = [
         }
       )
       setQntProducts()
+      if (parentCategoryId === null) {
+        // в этом случае редактируется категория-бренд и нужно изменить все опции у всех товаров
+        // которые относятся к этому бренду
+        const products = await Product.find({ brandId: _id })
+         await Promise.all(
+           products.map(async (product) => {
+             const newOptions = { ...options }
+
+             if (Object.keys(newOptions).length) {
+               Object.keys(newOptions).forEach((option) => {
+                 if (typeof product.options[option] === "object") {
+                   newOptions[option].isChangePrice =
+                     product.options[option].isChangePrice
+                   Object.keys(newOptions[option].values).forEach((value) => {
+                     if (
+                       typeof product.options[option].values[value] === "object"
+                     ) {
+                       newOptions[option].values[value].price =
+                         product.options[option].values[value].price
+                       newOptions[option].values[value].checked =
+                         product.options[option].values[value].checked
+                     }
+                   })
+                 }
+               })
+             }
+             await Product.updateOne(
+               { _id: product._id },
+               { options: newOptions }
+             )
+           })
+         )
+      }
       res.status(200).json({ message: "Категория успешно изменена" })    
   }
   )
