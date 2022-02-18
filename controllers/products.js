@@ -64,7 +64,8 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
   for (let key in req.query) {
     if (req.query[key]) searchObj[key] = req.query[key]
   }
-  const products = await Product.find(searchObj).limit(20)
+  
+  const products = await Product.find(searchObj)
 
   res.status(200).json({ products })
 })

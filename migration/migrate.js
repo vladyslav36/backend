@@ -22,7 +22,7 @@ const download = require("image-downloader")
 const sharp = require("sharp")
 const { getBrand } = require("../utils/getBrand")
 const { setQntProducts } = require("../utils/setQntProducts")
-const Options = require("../models/optionsModel")
+
 
 const fullPath = (path) => (path ? `https://karmen.kh.ua/image/${path}` : "")
 
@@ -302,7 +302,7 @@ const migrateOptions = async () => {
   })
   const id_values = Object.assign({}, ...values)
   // console.log(id_values)
-  await Options.deleteMany()
+  
   const brands = await Category.find({ parentCategoryId: null })
   await Promise.all(
     brands.map(async (brand) => {
