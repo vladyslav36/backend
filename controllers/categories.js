@@ -6,6 +6,7 @@ const path = require("path")
 const { removeImage, updateImageToSlug } = require("../utils/handleImages")
 const asyncHandler=require('express-async-handler')
 const { setQntProducts } = require("../utils/setQntProducts")
+const { getBrand } = require("../utils/getBrand")
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -60,7 +61,9 @@ exports.addCategory = [
         options,
         slug,
       })
-
+      const categories = await Category.find()
+      const brand = getBrand(category, categories)
+      category.brandId=brand._id
       await category.save()
       setQntProducts()
       res.status(200).json({ message: "Категория успешно добавлена" })
@@ -94,6 +97,8 @@ exports.updateCategory = [
         }
       }
       await removeImage(category.image)
+      const categories=await Category.find()
+      const brandId = getBrand({ _id, parentCategoryId },categories)._id
       await Category.updateOne(
         { _id },
         {
@@ -104,8 +109,10 @@ exports.updateCategory = [
           image: imagePath,
           options,
           slug,
+          brandId
         }
       )
+      
       setQntProducts()
       if (parentCategoryId === null) {
         // в этом случае редактируется категория-бренд и нужно изменить все опции у всех товаров

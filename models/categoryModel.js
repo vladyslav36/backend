@@ -16,6 +16,11 @@ const CategorySchema = mongoose.Schema({
     ref: 'Category',
     default:null
   },
+  brandId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    default:null
+  },
   parentCategory: { type: String, default: '' },
   
   qntProducts:{type:Number,default:0},

@@ -104,7 +104,11 @@ const migrate = async () => {
       })
     })
   )
-
+  const categories = await Category.find()
+  await Promise.all(categories.map(async item => {
+    const brandId = getBrand(item, categories)._id
+    await Category.updateOne({_id:item._id},{brandId})
+  }))
   // **********************************************************
   // migrate products
   // **********************************************************

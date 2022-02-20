@@ -1,17 +1,13 @@
 const { findOne } = require("../models/productModel")
 const Product = require("../models/productModel")
 const Category = require("../models/categoryModel")
-
 const { getSlug } = require("../utils/getSlug")
 const multer = require("multer")
 const fs = require("fs-extra")
 const path = require("path")
-const {
-  
-  removeImage,
-  
-  resizeImage,
-  
+const {  
+  removeImage,  
+  resizeImage,  
 } = require("../utils/handleImages")
 const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
@@ -63,10 +59,8 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
   let searchObj = {}
   for (let key in req.query) {
     if (req.query[key]) searchObj[key] = req.query[key]
-  }
-  
+  }  
   const products = await Product.find(searchObj)
-
   res.status(200).json({ products })
 })
 exports.getProduct = asyncHandler(async (req, res, next) => {
