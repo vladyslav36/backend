@@ -6,13 +6,13 @@ const asyncHandler=require('express-async-handler')
 
   
 exports.getProductsModels = asyncHandler(async (req, res) => {
-  const string = req.query.string  
-  const values = req.body
-  // Убираем пустышки и меняем category и brand нв categoryId и brandId
+    
+  const {string,name,categoryId,brandId} = req.body
+  // Убираем пустышки 
   const searchObj = {}
-  if (values.name.id) searchObj.name=values.name.name
-  if (values.category.id) searchObj.categoryId=values.category.id
-  if (values.brand.id) searchObj.brandId = values.brand.id
+  if (name) searchObj.name=name
+  if (categoryId) searchObj.categoryId=categoryId
+  if (brandId) searchObj.brandId = brandId
   const data = await Product.find({
     model: { $regex: string, $options: "i" },
     ...searchObj
@@ -21,13 +21,12 @@ exports.getProductsModels = asyncHandler(async (req, res) => {
   res.status(200).json({ list })
 }) 
 exports.getProductsNames = asyncHandler(async (req, res) => {
-  const string = req.query.string
-   const values = req.body
-   // Убираем пустышки и меняем category и brand нв categoryId и brandId
+  const { string, model, categoryId, brandId } = req.body
+   // Убираем пустышк
    const searchObj = {}
-   if (values.model.id) searchObj.model = values.model.name
-   if (values.category.id) searchObj.categoryId = values.category.id
-   if (values.brand.id) searchObj.brandId = values.brand.id
+    if (model) searchObj.model = model
+    if (categoryId) searchObj.categoryId = categoryId
+    if (brandId) searchObj.brandId = brandId
   const data = await Product.find({
     name: { $regex: string, $options: "i" },
     ...searchObj
@@ -36,11 +35,11 @@ exports.getProductsNames = asyncHandler(async (req, res) => {
   res.status(200).json({ list })
 }) 
 exports.getCategories = asyncHandler(async (req, res) => {
-  const string = req.query.string
-  const values = req.body
-  // Убираем пустышки и меняем category и brand нв categoryId и brandId
+  
+  const {brandId,string} = req.body
+  // Убираем пустышки 
   const searchObj = {}  
-  if (values.brand.id) searchObj.brandId = values.brand.id  
+  if (brandId) searchObj.brandId = brandId 
   const data = await Category.find({
     name: { $regex: string, $options: "i" },...searchObj
   }).limit(10)
@@ -48,7 +47,7 @@ exports.getCategories = asyncHandler(async (req, res) => {
   res.status(200).json({ list })
 }) 
 exports.getBrands = asyncHandler(async (req, res) => {
-  const string = req.query.string  
+  const { string }=req.body 
   const data = await Category.find({
     name: { $regex: string, $options: "i" },
     parentCategoryId: null

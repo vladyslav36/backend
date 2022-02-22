@@ -57,8 +57,8 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
   
   // удаляем пустышки
   let searchObj = {}
-  for (let key in req.query) {
-    if (req.query[key]) searchObj[key] = req.query[key]
+  for (let key in req.body) {
+    if (req.body[key]) searchObj[key] = req.body[key]
   }  
   const products = await Product.find(searchObj)
   res.status(200).json({ products })

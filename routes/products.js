@@ -22,7 +22,7 @@ router
 
 router.route("/search").get(getSearchProducts)
 
-router.route("/edit_search").get(getEditSearchProducts)
+router.route("/edit_search").post(getEditSearchProducts)
 
 router.route("/category/:id").get(getProductsCategoryId)
 
