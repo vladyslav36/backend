@@ -1,5 +1,5 @@
 [
-{"type":"header","version":"4.9.7","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"header","version":"4.9.10","comment":"Export to JSON plugin for PHPMyAdmin"},
 {"type":"database","name":"karmenkh_ocar314"},
 {"type":"table","name":"ocst_option_value_description","database":"karmenkh_ocar314","data":
 [
@@ -134,7 +134,7 @@
 {"option_value_id":"203","language_id":"1","option_id":"22","name":"песочный"},
 {"option_value_id":"202","language_id":"1","option_id":"22","name":"перламутр"},
 {"option_value_id":"201","language_id":"1","option_id":"22","name":"оранжевый"},
-{"option_value_id":"200","language_id":"1","option_id":"22","name":"зел. яблоко"},
+{"option_value_id":"200","language_id":"1","option_id":"22","name":"з.яблоко"},
 {"option_value_id":"199","language_id":"1","option_id":"22","name":"джинс"},
 {"option_value_id":"255","language_id":"1","option_id":"22","name":"св. желтый"},
 {"option_value_id":"254","language_id":"1","option_id":"22","name":"бледно-розовый"},

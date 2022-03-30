@@ -1,5 +1,5 @@
 [
-{"type":"header","version":"4.9.7","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"header","version":"4.9.10","comment":"Export to JSON plugin for PHPMyAdmin"},
 {"type":"database","name":"karmenkh_ocar314"},
 {"type":"table","name":"ocst_category_description","database":"karmenkh_ocar314","data":
 [

@@ -151,6 +151,7 @@ const migrate = async () => {
   }))
   const new_product = await Promise.all(
     product.map(async (item) => {
+      
       const model = item.model
       const { name, description } =
         productDescription.find(
@@ -176,22 +177,29 @@ const migrate = async () => {
       const category = await Category.findById(categoryId)
       const categories = await Category.find()
       const brand = getBrand(category, categories)
+     
       const newImages = await Promise.all(
         images.map(async (image) => {
+          
           if (name && image) {
             const slug = getSlug(name)
-            // console.log(image)
+            
             const newImage = `/upload/images/product/${slug}${path.extname(
               image
-            )}`
-            const newImageMd = `/upload/images/product/${slug}-md${path.extname(
-              image
-            )}`
-            const newImageSm = `/upload/images/product/${slug}-sm${path.extname(
-              image
-            )}`
-
-            await download.image({ url: image, dest: `.${newImage}` })
+            ).toLowerCase()}`
+            const newImageMd = `/upload/images/product/${slug}-md${path
+              .extname(image)
+              .toLowerCase()}`
+            const newImageSm = `/upload/images/product/${slug}-sm${path
+              .extname(image)
+              .toLowerCase()}`
+             try {
+                await download.image({ url: image, dest: `.${newImage}` })
+             } catch (error) {
+               return { newImage: "", newImageSm: "", newImageMd: "" }
+             }
+                           
+            
 
             await sharp(`.${newImage}`)
               .resize({ width: 50 })
@@ -210,10 +218,10 @@ const migrate = async () => {
 
       if (name && model) {
         await Product.create({
-          product_id: item.product_id,
+          // product_id: item.product_id,
           categoryId: categoryId ? categoryId : null,
-          category: category ? category.name : "",
-          brand: brand ? brand.name : "",
+          // category: category ? category.name : "",
+          // brand: brand ? brand.name : "",
           brandId: brand ? brand._id : null,
           price: item.price,
           currencyValue: item.currencyValue,
@@ -230,10 +238,10 @@ const migrate = async () => {
       }
 
       return {
-        product_id: item.product_id,
+        // product_id: item.product_id,
         categoryId: categoryId ? categoryId : null,
-        category: category ? category.name : "",
-        brand: brand ? brand.name : "",
+        // category: category ? category.name : "",
+        // brand: brand ? brand.name : "",
         brandId: brand ? brand._id : null,
         name,
         model,
@@ -250,15 +258,16 @@ const migrate = async () => {
   // console.log(new_product)
   await setQntProducts()
 
-  // ******************************************************
-  // migrate options
-  // ******************************************************
+  
 
   process.exit()
 }
 
-// migrate()
+migrate()
 
+// ******************************************************
+  // migrate options
+  // ******************************************************
 const migrateOptions = async () => {
   await connectDb()
 
@@ -451,4 +460,4 @@ const migrateOptions = async () => {
   process.exit()
 }
 
-migrateOptions()
+// migrateOptions()
