@@ -361,9 +361,19 @@ const migrateOptions = async () => {
         const options = getOptions({ Цвет: 21, Размер: 14 })
       await  saveOptions(brand, options)
       }
+      // options Conte
+      if (brand.name === "Diwari") {
+        const options = getOptions({ Цвет: 20, Размер: 14 })
+      await  saveOptions(brand, options)
+      }
       // options Легка хода
       if (brand.name === "Легка Хода") {
         const options = getOptions({ Цвет: 23, Размер: 14 })
+
+      await  saveOptions(brand, options)
+      }
+      if (brand.name === "Классик") {
+        const options = getOptions({ Цвет: 26, Размер: 14 })
 
       await  saveOptions(brand, options)
       }
