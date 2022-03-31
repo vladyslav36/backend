@@ -263,7 +263,7 @@ const migrate = async () => {
   process.exit()
 }
 
-migrate()
+// migrate()
 
 // ******************************************************
   // migrate options
@@ -460,4 +460,4 @@ const migrateOptions = async () => {
   process.exit()
 }
 
-// migrateOptions()
+migrateOptions()

@@ -1,3 +1,5 @@
 
 /config/.env
 /node_modules
+/upload/images/category
+/upload/images/product
