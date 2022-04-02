@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { protect, protectAdmin }=require('../middleware/auth')
-const {getAllCategories,addCategory,updateCategory,deleteCategory,getBrands,getCategoryById, addOptions, deleteOption } =require('../controllers/categories')
+const {getAllCategories,addCategory,updateCategory,deleteCategory,getBrands,getCategoryById } =require('../controllers/categories')
 
 router
   .route('/')
