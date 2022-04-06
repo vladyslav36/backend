@@ -43,7 +43,6 @@ app.use('/api/cart',cartRouter)
 app.use('/api/currencyrate', currencyRateRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/search', searchRouter)
-// app.use('/api/options', optionsRouter)
 app.use('/api/order', orderRouter)
 app.use('/api/information',informationRouter)
 
