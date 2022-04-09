@@ -42,7 +42,7 @@ exports.getCategories = asyncHandler(async (req, res) => {
   if (brandId) searchObj.brandId = brandId 
   const data = await Category.find({
     name: { $regex: string, $options: "i" },...searchObj
-  }).limit(10)
+  })
   const list = data.map((item) => ({ name: item.name, id: item._id }))
   res.status(200).json({ list })
 }) 
