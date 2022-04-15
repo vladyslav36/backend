@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === "development") {
 app.use(cors())
 app.use(express.json())
 app.use("/upload", express.static(path.join(__dirname, "/upload")))
-app.use("/var", express.static(path.join(__dirname, "/var")))
+app.use("/.well-known", express.static(path.join(__dirname, "/.well-known")))
 app.use("/api/user", userRouter)
 app.use("/api/products", productsRouter)
 app.use("/api/categories", categoriesRouter)
