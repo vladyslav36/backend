@@ -26,9 +26,16 @@ exports.getAllCategories = asyncHandler(
 }
 )
 exports.getCategoryById = asyncHandler(
-  async (req, res, next) => { 
+  async (req, res) => { 
     const { id } = req.params    
     const category = await Category.findById(id)
+    res.status(200).json({ category})  
+}
+)
+exports.getCategoryBySlug = asyncHandler(
+  async (req, res) => { 
+    const { slug } = req.params    
+    const category = await Category.findOne({slug})
     res.status(200).json({ category})  
 }
 )
