@@ -11,7 +11,7 @@ exports.sendMail =asyncHandler((req, res) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.ukr.net",
     port: 465,
-    secure: true,    
+    secure: true,     
     auth: {
       user,
       pass,
