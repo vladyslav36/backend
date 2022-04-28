@@ -12,6 +12,9 @@ exports.sendMail =asyncHandler((req, res) => {
     host: "smtp.ukr.net",
     port: 465,
     secure: true,
+    tls: {
+    servername: "karmen.in.ua"  
+    },
     auth: {
       user,
       pass,
