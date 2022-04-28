@@ -23,7 +23,7 @@ exports.sendMail =asyncHandler((req, res) => {
         subject: "Заказ",        
         html: mailString,
       })
-      console.log(user,pass)
+      
   
     }
   mail()
