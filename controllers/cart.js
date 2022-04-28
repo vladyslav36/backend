@@ -17,13 +17,14 @@ exports.sendMail =asyncHandler((req, res) => {
       pass,
     },
   })
+      console.log('before')
       const info = await transporter.sendMail({
         from: user,
         to: "vladyslav36@gmail.com",
         subject: "Заказ",        
         html: mailString,
       })
-      
+      console.log('after')
   
     }
   mail()
