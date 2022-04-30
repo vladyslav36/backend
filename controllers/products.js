@@ -1,30 +1,10 @@
-const { findOne } = require("../models/productModel")
 const Product = require("../models/productModel")
-const Category = require("../models/categoryModel")
 const { getSlug } = require("../utils/getSlug")
-const multer = require("multer")
-const fs = require("fs-extra")
 const path = require("path")
-const {  
-  removeImage,  
-  resizeImage,  
-} = require("../utils/handleImages")
+const sharp = require("sharp")
+const { removeImage } = require("../utils/handleImages")
 const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
-
-
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `upload/images/product/`)
-  },
-  filename: function (req, file, cb) {
-    const { name } = JSON.parse(req.body.values)
-    const slug = getSlug(name)
-    cb(null, `${slug}${path.extname(file.originalname)}`)
-  },
-})
-const sortOpt = (arr) => arr.sort((a, b) => (a.name > b.name ? 1 : -1))
 
 exports.getShowcaseProducts = asyncHandler(async (req, res, next) => {
   const showcaseProducts = await Product.find({ isShowcase: true })
@@ -40,8 +20,6 @@ exports.getProductsCategoryId = asyncHandler(async (req, res, next) => {
   res.status(200).json({ products })
 })
 
-
-
 exports.getSearchProducts = asyncHandler(async (req, res) => {
   const { string } = req.query
   const products = await Product.find({
@@ -54,56 +32,196 @@ exports.getSearchProducts = asyncHandler(async (req, res) => {
   res.status(200).json({ products })
 })
 exports.getEditSearchProducts = asyncHandler(async (req, res) => {
-  
   // удаляем пустышки
   let searchObj = {}
   for (let key in req.body) {
     if (req.body[key]) searchObj[key] = req.body[key]
-  }  
+  }
   const products = await Product.find(searchObj)
   res.status(200).json({ products })
 })
 exports.getProduct = asyncHandler(async (req, res, next) => {
-  const { slug } = req.params    
-  const product = await Product.findOne({ slug }).populate('categoryId brandId')  
-  
+  const { slug } = req.params
+  const product = await Product.findOne({ slug }).populate("categoryId brandId")
+
   res.status(200).json({ product })
 })
-exports.addProducts = [
-  multer({ storage }).array("images"),
+exports.addProducts = asyncHandler(async (req, res) => {
+  const {
+    name,
+    model,
+    brand,
+    brandId,
+    category,
+    categoryId,
+    isShowcase,
+    isInStock,
+    description,
+    options,
+    price,
+    retailPrice,
+    currencyValue,
+  } = JSON.parse(req.body.values)
+  const root = process.env.ROOT_NAME
+  const slug = getSlug(name)
+  let images = []
+  let imagesMd = []
+  let imagesSm = []
+  if (req.files != null) {
+    const files = Array.isArray(req.files.images)
+      ? req.files.images
+      : [req.files.images]
 
-  asyncHandler(async (req, res, next) => {
-    const {
-      name,
-      model,
-      brand,
-      brandId,
-      category,
-      categoryId,      
-      isShowcase,
-      isInStock,
-      description,
-      options,
-      price,
-      retailPrice,
-      currencyValue,
-    } = JSON.parse(req.body.values)
+    const newImages = await Promise.all(
+      files.map(async (file) => {
+        const fileName = path.parse(file.name).name
+        const fileExt = path.parse(file.name).ext
+        const slug = getSlug(fileName)
+        const image = `/upload/images/product/${slug}${fileExt}`
+        const imageSm = `/upload/images/product/${slug}-sm${fileExt}`
+        const imageMd = `/upload/images/product/${slug}-md${fileExt}`
+        await file.mv(`${root}${image}`)
+        await sharp(`${root}${image}`)
+          .resize({ width: 200 })
+          .toFile(`${root}${imageMd}`)
+        await sharp(`${root}${image}`)
+          .resize({ width: 50 })
+          .toFile(`${root}${imageSm}`)
+        return { image, imageSm, imageMd }
+      })
+    )
+    images = newImages.map((item) => item.image)
+    imagesSm = newImages.map((item) => item.imageSm)
+    imagesMd = newImages.map((item) => item.imageMd)
+  }
 
-    const slug = req.files.length
-      ? path.parse(req.files[0].filename).name
-      : getSlug(name)
-    const images =
-      req.files.map((item) => `/${item.path.replace(/\\/g, "/")}`) || []
+  const product = new Product({
+    name,
+    model,
+    brand,
+    brandId,
+    slug,
+    images,
+    imagesMd,
+    imagesSm,
+    category,
+    categoryId,
+    description,
+    isShowcase,
+    isInStock,
+    options,
+    price,
+    retailPrice,
+    currencyValue,
+  })
+  const data = await product.save()
 
-    const imagesMd = []
-    const imagesSm = []
-    images.forEach((item) => {
-      const { sm, md } = resizeImage(item)
-      imagesMd.push(md)
-      imagesSm.push(sm)
+  setQntProducts()
+  res.status(200).json({ data })
+})
+;(exports.updateProduct = asyncHandler(async (req, res) => {
+  const {
+    _id,
+    name,
+    model,
+    brand,
+    brandId,
+    category,
+    categoryId,
+    options,
+    isShowcase,
+    isInStock,
+    description,
+    price,
+    retailPrice,
+    currencyValue,
+  } = JSON.parse(req.body.values)
+
+  const imageClientPaths = JSON.parse(req.body.imageClientPaths)
+  const root = process.env.ROOT_NAME
+  const slug = getSlug(name)
+  let images = []
+  let imagesSm = []
+  let imagesMd = []
+  // Картинки noBlob это картинки с базы которые не менялись
+  const noBlob = imageClientPaths
+    .filter((imagePath) => !imagePath.startsWith("blob"))
+    .map((item) => `/upload/images/product/${path.basename(item)}`)
+  const noBlobSm = noBlob.map(
+    (item) =>
+      `/upload/images/product/${path.parse(item).name}-sm${
+        path.parse(item).ext
+      }`
+  )
+  const noBlobMd = noBlob.map(
+    (item) =>
+      `/upload/images/product/${path.parse(item).name}-md${
+        path.parse(item).ext
+      }`
+  )
+
+  // если новых картинок нет
+  if (req.files === null) {
+    if (imageClientPaths.length) {
+      images = [...noBlob]
+      imagesSm = [...noBlobSm]
+      imagesMd = [...noBlobMd]
+    }
+    // если новые картинки есть
+  } else {
+    const files = Array.isArray(req.files.images)
+      ? req.files.images
+      : [req.files.images]
+    const newImages = await Promise.all(
+      files.map(async (file) => {
+        const name = path.parse(file.name).name
+        const ext = path.parse(file.name).ext
+        const slug = getSlug(name)
+        const image = `/upload/images/product/${slug}${ext}`
+        const imageSm = `/upload/images/product/${slug}-sm${ext}`
+        const imageMd = `/upload/images/product/${slug}-md${ext}`
+        await file.mv(`${root}${image}`)
+        await sharp(`${root}${image}`)
+          .resize({ width: 200 })
+          .toFile(`${root}${imageSm}`)
+        await sharp(`${root}${image}`)
+          .resize({ width: 50 })
+          .toFile(`${root}${imageMd}`)
+        return { image, imageSm, imageMd }
+      })
+    )
+    images = [...noBlob, ...newImages.map((item) => item.image)]
+    imagesSm = [...noBlobSm, ...newImages.map((item) => item.imageSm)]
+    imagesMd = [...noBlobMd, ...newImages.map((item) => item.imageMd)]
+  }
+
+  const product = await Product.findById(_id)
+  // удаление картинок которые есть в базе но нет среди нужных
+  await Promise.all(
+    product.images.map(async (item) => {
+      if (!images.includes(item)) {
+        await removeImage(item)
+      }
     })
+  )
+  await Promise.all(
+    product.imagesSm.map(async (item) => {
+      if (!imagesSm.includes(item)) {
+        await removeImage(item)
+      }
+    })
+  )
+  await Promise.all(
+    product.imagesMd.map(async (item) => {
+      if (!imagesMd.includes(item)) {
+        await removeImage(item)
+      }
+    })
+  )
 
-    const product = new Product({
+  await Product.updateOne(
+    { _id },
+    {
       name,
       model,
       brand,
@@ -113,156 +231,37 @@ exports.addProducts = [
       imagesMd,
       imagesSm,
       category,
-      categoryId,      
-      description,
-      isShowcase,
-      isInStock,
-      options,
-      price,
-      retailPrice,
-      currencyValue,
-    })
-    const data = await product.save()
-    
-    setQntProducts()
-    res.status(200).json({ data })
-  }),
-]
-exports.updateProduct = [
-  multer({ storage }).array("images"),
-  asyncHandler(async (req, res, next) => {
-    const {
-      _id,
-      name,
-      model,
-      brand,
-      brandId,
-      category,
       categoryId,
       options,
+      description,
       isShowcase,
       isInStock,
-      description,
       price,
       retailPrice,
       currencyValue,
-    } = JSON.parse(req.body.values)
-    const imageClientPaths = JSON.parse(req.body.imageClientPaths)
-
-    const slug = req.files.length
-      ? path.parse(req.files[0].filename).name
-      : getSlug(name)
-
-    let count = 0
-    const images = imageClientPaths.map((item, i) => {
-      // условие разделяет ссылки на картинки старые и новые которые прилетают с фронта с "blob..."
-      const isBlob = item.indexOf("blob") >= 0 ? true : false
-      if (isBlob) {
-        const newPath = `/${req.files[count].path.replace(/\\/g, "/")}`
-        count++
-        return newPath
-      } else {
-        // если ссылка на картинку осталась прежняя а название продукта изменилось,
-        // этот блок создает новый слаг, состоящий из нового имени и старой второй части слага,
-        // для всех трех картинок, вычисляет старый полный путь, новый полный путь и переименовывает все картинки
-       
-        const newSlug = `${slug.split("-")[0]}-${
-          path.parse(item).name.split("-")[1]
-        }`
-        const newSlugMd = `${slug.split("-")[0]}-${
-          path.parse(item).name.split("-")[1]
-        }-md`
-        const newSlugSm = `${slug.split("-")[0]}-${
-          path.parse(item).name.split("-")[1]
-        }-sm`
-        const ext = path.extname(item)
-        const ROOT_NAME = process.env.ROOT_NAME
-        const dirName = `${ROOT_NAME}/upload/images/product`
-        const oldPath = `${dirName}/${path.parse(item).name}${ext}`
-        const oldPathMd = `${dirName}/${path.parse(item).name}-md${ext}`
-        const oldPathSm = `${dirName}/${path.parse(item).name}-sm${ext}`
-
-        const newPath = `${dirName}/${newSlug}${ext}`
-        const newPathMd = `${dirName}/${newSlugMd}${ext}`
-        const newPathSm = `${dirName}/${newSlugSm}${ext}`
-
-        fs.rename(oldPath, newPath)
-        fs.rename(oldPathMd, newPathMd)
-        fs.rename(oldPathSm, newPathSm)
-
-        return `/upload/images/product/${newSlug}${ext}`
-      }
-    })
-
-    const product = await Product.findOne({ _id })
-    const dbPaths = product.images
-    //  удаление картинок, которые есть в базе но которых уже нет на фронте, т.е. пользователь из удалил
-    dbPaths.forEach(async (item) => {
-      if (!images.includes(item)) {
-        const parsedPath = path.parse(item)
-
-        await removeImage(item)
-        await removeImage(
-          `${path.dirname(item)}/${parsedPath.name}-md${parsedPath.ext}`
-        )
-        await removeImage(
-          `${path.dirname(item)}/${parsedPath.name}-sm${parsedPath.ext}`
-        )
-      }
-    })
-
-    const imagesMd = []
-    const imagesSm = []
-    images.forEach((item) => {
-      const { sm, md } = resizeImage(item)
-      imagesMd.push(md)
-      imagesSm.push(sm)
-    })
-console.log(options['Цвет'])
-    await Product.updateOne(
-      { _id },
-      {
-        name,
-        model,
-        brand,
-        brandId,
-        slug,
-        images,
-        imagesMd,
-        imagesSm,
-        category,
-        categoryId,
-        options,
-        description,
-        isShowcase,
-        isInStock,
-        price,
-        retailPrice,
-        currencyValue,
-      }
-    )
-    
-    setQntProducts()
-    res.status(200).json({ message: "Товар успешно обновлен" })
-  }),
-]
-exports.deleteProduct = asyncHandler(async (req, res, next) => {
-  const { id } = req.params
-  const product = await Product.findOne({ _id: id })
-
-  await Promise.all(
-    product.images.map(async (item) => await removeImage(item))
-    // product.imagesMd.map(async (item) => await removeImage(item))
-    // product.imagesSm.map(async (item) => await removeImage(item))
-  )
-  await Promise.all(
-    product.imagesMd.map(async (item) => await removeImage(item))
-  )
-  await Promise.all(
-    product.imagesSm.map(async (item) => await removeImage(item))
+    }
   )
 
-  await Product.deleteOne({ _id: id })
   setQntProducts()
-  res.status(200).json({ message: "success" })
-})
+  res.status(200).json({ message: "Товар успешно обновлен" })
+})),
+  (exports.deleteProduct = asyncHandler(async (req, res, next) => {
+    const { id } = req.params
+    const product = await Product.findOne({ _id: id })
+
+    await Promise.all(
+      product.images.map(async (item) => await removeImage(item))
+      // product.imagesMd.map(async (item) => await removeImage(item))
+      // product.imagesSm.map(async (item) => await removeImage(item))
+    )
+    await Promise.all(
+      product.imagesMd.map(async (item) => await removeImage(item))
+    )
+    await Promise.all(
+      product.imagesSm.map(async (item) => await removeImage(item))
+    )
+
+    await Product.deleteOne({ _id: id })
+    setQntProducts()
+    res.status(200).json({ message: "success" })
+  }))

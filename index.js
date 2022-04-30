@@ -18,6 +18,7 @@ const searchRouter = require("./routes/search")
 // const optionsRouter=require('./routes/options')
 const orderRouter = require("./routes/order")
 const informationRouter = require("./routes/information")
+const fileUpload=require('express-fileupload')
 
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
@@ -33,6 +34,7 @@ if (process.env.NODE_ENV === "development") {
 }
 app.use(cors())
 app.use(express.json())
+app.use(fileUpload())
 app.use("/upload", express.static(path.join(__dirname, "/upload")))
 app.use("/api/user", userRouter)
 app.use("/api/products", productsRouter)
