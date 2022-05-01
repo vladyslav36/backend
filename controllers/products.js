@@ -64,6 +64,7 @@ exports.addProducts = asyncHandler(async (req, res) => {
   } = JSON.parse(req.body.values)
   const root = process.env.ROOT_NAME
   const slug = getSlug(name)
+  const productPath = "/upload/images/product"
   let images = []
   let imagesMd = []
   let imagesSm = []
@@ -77,9 +78,9 @@ exports.addProducts = asyncHandler(async (req, res) => {
         const fileName = path.parse(file.name).name
         const fileExt = path.parse(file.name).ext
         const slug = getSlug(fileName)
-        const image = `/upload/images/product/${slug}${fileExt}`
-        const imageSm = `/upload/images/product/${slug}-sm${fileExt}`
-        const imageMd = `/upload/images/product/${slug}-md${fileExt}`
+        const image = `${productPath}/${slug}${fileExt}`
+        const imageSm = `${productPath}/${slug}-sm${fileExt}`
+        const imageMd = `${productPath}/${slug}-md${fileExt}`
         await file.mv(`${root}${image}`)
         await sharp(`${root}${image}`)
           .resize({ width: 200 })
@@ -119,7 +120,7 @@ exports.addProducts = asyncHandler(async (req, res) => {
   setQntProducts()
   res.status(200).json({ data })
 })
-;(exports.updateProduct = asyncHandler(async (req, res) => {
+exports.updateProduct = asyncHandler(async (req, res) => {
   const {
     _id,
     name,
@@ -140,24 +141,21 @@ exports.addProducts = asyncHandler(async (req, res) => {
   const imageClientPaths = JSON.parse(req.body.imageClientPaths)
   const root = process.env.ROOT_NAME
   const slug = getSlug(name)
+  const productPath = "/upload/images/product"
   let images = []
   let imagesSm = []
   let imagesMd = []
   // Картинки noBlob это картинки с базы которые не менялись
   const noBlob = imageClientPaths
     .filter((imagePath) => !imagePath.startsWith("blob"))
-    .map((item) => `/upload/images/product/${path.basename(item)}`)
+    .map((item) => `${productPath}/${path.basename(item)}`)
   const noBlobSm = noBlob.map(
     (item) =>
-      `/upload/images/product/${path.parse(item).name}-sm${
-        path.parse(item).ext
-      }`
+      `${productPath}/${path.parse(item).name}-sm${path.parse(item).ext}`
   )
   const noBlobMd = noBlob.map(
     (item) =>
-      `/upload/images/product/${path.parse(item).name}-md${
-        path.parse(item).ext
-      }`
+      `${productPath}/${path.parse(item).name}-md${path.parse(item).ext}`
   )
 
   // если новых картинок нет
@@ -177,9 +175,9 @@ exports.addProducts = asyncHandler(async (req, res) => {
         const name = path.parse(file.name).name
         const ext = path.parse(file.name).ext
         const slug = getSlug(name)
-        const image = `/upload/images/product/${slug}${ext}`
-        const imageSm = `/upload/images/product/${slug}-sm${ext}`
-        const imageMd = `/upload/images/product/${slug}-md${ext}`
+        const image = `${productPath}/${slug}${ext}`
+        const imageSm = `${productPath}/${slug}-sm${ext}`
+        const imageMd = `${productPath}/${slug}-md${ext}`
         await file.mv(`${root}${image}`)
         await sharp(`${root}${image}`)
           .resize({ width: 200 })
@@ -244,8 +242,8 @@ exports.addProducts = asyncHandler(async (req, res) => {
 
   setQntProducts()
   res.status(200).json({ message: "Товар успешно обновлен" })
-})),
-  (exports.deleteProduct = asyncHandler(async (req, res, next) => {
+})
+  exports.deleteProduct = asyncHandler(async (req, res, next) => {
     const { id } = req.params
     const product = await Product.findOne({ _id: id })
 
@@ -264,4 +262,4 @@ exports.addProducts = asyncHandler(async (req, res) => {
     await Product.deleteOne({ _id: id })
     setQntProducts()
     res.status(200).json({ message: "success" })
-  }))
+  })
