@@ -11,14 +11,13 @@ const { errorHandler } = require("./middleware/errorHandler.js")
 const productsRouter = require("./routes/products")
 const categoriesRouter = require("./routes/categories")
 const currencyRateRouter = require("./routes/currencyRate")
-const uploadRouter = require("./routes/upload")
 const cartRouter = require("./routes/cart")
 const userRouter = require("./routes/user")
 const searchRouter = require("./routes/search")
 // const optionsRouter=require('./routes/options')
 const orderRouter = require("./routes/order")
 const informationRouter = require("./routes/information")
-const fileUpload=require('express-fileupload')
+const fileUpload = require("express-fileupload")
 
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
@@ -26,8 +25,6 @@ process.env.ROOT_NAME = path.dirname(__filename)
 connectDb()
 
 const app = express()
-
-
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
@@ -41,11 +38,9 @@ app.use("/api/products", productsRouter)
 app.use("/api/categories", categoriesRouter)
 app.use("/api/cart", cartRouter)
 app.use("/api/currencyrate", currencyRateRouter)
-app.use("/api/upload", uploadRouter)
 app.use("/api/search", searchRouter)
 app.use("/api/order", orderRouter)
 app.use("/api/information", informationRouter)
-
 app.use(notFound)
 app.use(errorHandler)
 
