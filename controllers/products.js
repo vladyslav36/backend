@@ -217,7 +217,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     })
   )
 
-  await Product.updateOne(
+  const productUp=await Product.findOneAndUpdate(
     { _id },
     {
       name,
@@ -237,11 +237,11 @@ exports.updateProduct = asyncHandler(async (req, res) => {
       price,
       retailPrice,
       currencyValue,
-    }
+    },{new:true}
   )
 
   setQntProducts()
-  res.status(200).json({ message: "Товар успешно обновлен" })
+  res.status(200).json({product:productUp })
 })
   exports.deleteProduct = asyncHandler(async (req, res, next) => {
     const { id } = req.params

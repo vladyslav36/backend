@@ -90,7 +90,7 @@ exports.updateCategory = asyncHandler(async (req, res) => {
 
   const categories = await Category.find()
   const brandId = getBrand({ _id, parentCategoryId }, categories)._id
-  await Category.updateOne(
+  const categoryUp=await Category.findOneAndUpdate(
     { _id },
     {
       name,
@@ -101,7 +101,7 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       options,
       slug,
       brandId,
-    }
+    },{new:true}
   )
 
   setQntProducts()
@@ -133,7 +133,7 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       })
     )
   }
-  res.status(200).json({ message: "Категория успешно изменена" })
+  res.status(200).json({ category:categoryUp })
 })
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
