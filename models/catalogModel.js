@@ -2,6 +2,7 @@ const mongoose=require('mongoose')
 
 const CatalogSchema = mongoose.Schema({
   name: String,  
+  image:String,
   parentCatalogId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Catalog',
