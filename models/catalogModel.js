@@ -2,8 +2,9 @@ const mongoose=require('mongoose')
 
 const CatalogSchema = mongoose.Schema({
   name: String,  
-  image:String,
-  parentCatalogId: {
+  image: String,  
+  parent:String,
+  parentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Catalog',
     default:null

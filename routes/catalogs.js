@@ -5,10 +5,10 @@ const router =require('express').Router()
 router.route('/')
   .get(getAllCatalogs)
   .post(addCatalog)
+  .put(updateCatalog)
 
 router.route('/:id')
   .get(getCatalogById)
-  .put(updateCatalog)
   .delete(deleteCatalog)
 
   module.exports=router
