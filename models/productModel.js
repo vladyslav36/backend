@@ -33,6 +33,11 @@ const ProductSchema = mongoose.Schema(
       ref: "Category",
       default: null,
     },
+    catalogId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Catalog',
+      default:null,
+    },
     description: {
       type: String,
     },

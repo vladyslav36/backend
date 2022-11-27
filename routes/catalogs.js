@@ -1,14 +1,15 @@
 const { getAllCatalogs, getCatalogById, addCatalog, deleteCatalog, updateCatalog } = require('../controllers/catalog')
+const { protect, protectAdmin }=require('../middleware/auth')
 
 const router =require('express').Router()
 
 router.route('/')
   .get(getAllCatalogs)
-  .post(addCatalog)
-  .put(updateCatalog)
+  .post(protect,protectAdmin, addCatalog)
+  .put(protect,protectAdmin, updateCatalog)
 
 router.route('/:id')
   .get(getCatalogById)
-  .delete(deleteCatalog)
+  .delete(protect,protectAdmin, deleteCatalog)
 
   module.exports=router

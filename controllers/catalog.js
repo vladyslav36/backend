@@ -59,7 +59,7 @@ exports.updateCatalog = asyncHandler(async (req, res) => {
   }
 
   const catalogUp = await Catalog.findOneAndUpdate({ _id}, { name, parentId,parent,image }, { new: true })
-  setQntProducts()
+  setQntCatalogProducts()
   res.status(200).json({catalog:catalogUp})
 })
 
