@@ -23,13 +23,14 @@ exports.getCategoryBySlug = asyncHandler(async (req, res) => {
 })
 
 exports.getBrands = asyncHandler(async (req, res) => {
-  const categories = await Category.find({ parentCategoryId: null })
+  const categories = await Category.find({ parentId: null })
   res.status(200).json({ categories })
 })
 
 exports.addCategory = asyncHandler(async (req, res) => {
-  const { name, parentCategory, parentCategoryId, description, options } =
-    JSON.parse(req.body.values)
+  const { name, parent, parentId, description, options } = JSON.parse(
+    req.body.values
+  )
   const root = process.env.ROOT_NAME
   let image
   if (req.files === null) {
@@ -46,8 +47,8 @@ exports.addCategory = asyncHandler(async (req, res) => {
 
   const category = new Category({
     name,
-    parentCategory,
-    parentCategoryId,
+    parent,
+    parentId,
     description,
     image,
     options,
@@ -62,8 +63,9 @@ exports.addCategory = asyncHandler(async (req, res) => {
 })
 
 exports.updateCategory = asyncHandler(async (req, res) => {
-  const { name, parentCategory, parentCategoryId, description, _id, options } =
-    JSON.parse(req.body.values)
+  const { name, parent, parentId, description, _id, options } = JSON.parse(
+    req.body.values
+  )
   const imageClientPath = req.body.imageClientPath
   const root = process.env.ROOT_NAME
 
@@ -89,23 +91,24 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   }
 
   const categories = await Category.find()
-  const brandId = getBrand({ _id, parentCategoryId }, categories)._id
-  const categoryUp=await Category.findOneAndUpdate(
+  const brandId = getBrand({ _id, parentId }, categories)._id
+  const categoryUp = await Category.findOneAndUpdate(
     { _id },
     {
       name,
-      parentCategory,
-      parentCategoryId,
+      parent,
+      parentId,
       description,
       image,
       options,
       slug,
       brandId,
-    },{new:true}
+    },
+    { new: true }
   )
 
   setQntProducts()
-  if (parentCategoryId === null) {
+  if (parentId === null) {
     // в этом случае редактируется категория-бренд и нужно изменить все опции у всех товаров
     // которые относятся к этому бренду
     const products = await Product.find({ brandId: _id })
@@ -133,7 +136,7 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       })
     )
   }
-  res.status(200).json({ category:categoryUp })
+  res.status(200).json({ category: categoryUp })
 })
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {

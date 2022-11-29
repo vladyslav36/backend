@@ -23,7 +23,6 @@ const sharp = require("sharp")
 const { getBrand } = require("../utils/getBrand")
 const { setQntProducts } = require("../utils/setQntProducts")
 
-
 const fullPath = (path) => (path ? `https://karmen.kh.ua/image/${path}` : "")
 
 dotenv.config({ path: "./config/.env" })
@@ -98,17 +97,19 @@ const migrate = async () => {
       }
 
       await category.updateOne({
-        parentCategoryId: parentNewId,
-        parentCategory: parent ? parent.name : "",
+        parentId: parentNewId,
+        parent: parent ? parent.name : "",
         image: newImage,
       })
     })
   )
   const categories = await Category.find()
-  await Promise.all(categories.map(async item => {
-    const brandId = getBrand(item, categories)._id
-    await Category.updateOne({_id:item._id},{brandId})
-  }))
+  await Promise.all(
+    categories.map(async (item) => {
+      const brandId = getBrand(item, categories)._id
+      await Category.updateOne({ _id: item._id }, { brandId })
+    })
+  )
   // **********************************************************
   // migrate products
   // **********************************************************
@@ -151,7 +152,6 @@ const migrate = async () => {
   }))
   const new_product = await Promise.all(
     product.map(async (item) => {
-      
       const model = item.model
       const { name, description } =
         productDescription.find(
@@ -177,29 +177,26 @@ const migrate = async () => {
       const category = await Category.findById(categoryId)
       const categories = await Category.find()
       const brand = getBrand(category, categories)
-     
+
       const newImages = await Promise.all(
         images.map(async (image) => {
-          
           if (name && image) {
             const slug = getSlug(name)
-            
-            const newImage = `/upload/images/product/${slug}${path.extname(
-              image
-            ).toLowerCase()}`
+
+            const newImage = `/upload/images/product/${slug}${path
+              .extname(image)
+              .toLowerCase()}`
             const newImageMd = `/upload/images/product/${slug}-md${path
               .extname(image)
               .toLowerCase()}`
             const newImageSm = `/upload/images/product/${slug}-sm${path
               .extname(image)
               .toLowerCase()}`
-             try {
-                await download.image({ url: image, dest: `.${newImage}` })
-             } catch (error) {
-               return { newImage: "", newImageSm: "", newImageMd: "" }
-             }
-                           
-            
+            try {
+              await download.image({ url: image, dest: `.${newImage}` })
+            } catch (error) {
+              return { newImage: "", newImageSm: "", newImageMd: "" }
+            }
 
             await sharp(`.${newImage}`)
               .resize({ width: 50 })
@@ -258,16 +255,14 @@ const migrate = async () => {
   // console.log(new_product)
   await setQntProducts()
 
-  
-
   process.exit()
 }
 
 // migrate()
 
 // ******************************************************
-  // migrate options
-  // ******************************************************
+// migrate options
+// ******************************************************
 const migrateOptions = async () => {
   await connectDb()
 
@@ -315,8 +310,8 @@ const migrateOptions = async () => {
   })
   const id_values = Object.assign({}, ...values)
   // console.log(id_values)
-  
-  const brands = await Category.find({ parentCategoryId: null })
+
+  const brands = await Category.find({ parentId: null })
   await Promise.all(
     brands.map(async (brand) => {
       const getOptions = (value_id) => {
@@ -353,29 +348,28 @@ const migrateOptions = async () => {
       // }
 
       const saveOptions = async (brand, options) => {
-        await Category.updateOne({ _id: brand._id },{options})
-        
+        await Category.updateOne({ _id: brand._id }, { options })
       }
       // options Conte
       if (brand.name === "Conte") {
         const options = getOptions({ Цвет: 21, Размер: 14 })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       // options Conte
       if (brand.name === "Diwari") {
         const options = getOptions({ Цвет: 20, Размер: 14 })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       // options Легка хода
       if (brand.name === "Легка Хода") {
         const options = getOptions({ Цвет: 23, Размер: 14 })
 
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       if (brand.name === "Классик") {
         const options = getOptions({ Цвет: 26, Размер: 14 })
 
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       // options Ника
       if (brand.name === "Ника") {
@@ -386,7 +380,7 @@ const migrateOptions = async () => {
           Упаковка: 16,
         })
 
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       // options Брест
       if (brand.name === "Брест") {
@@ -403,7 +397,7 @@ const migrateOptions = async () => {
           Размер: 14,
         })
 
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       // options Katherina_Lores_Dolores
       if (brand.name === "Katherina_Lores_Dolores") {
@@ -412,7 +406,7 @@ const migrateOptions = async () => {
           Размер: 14,
         })
 
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
 
       if (brand.name === "Хатка") {
@@ -420,7 +414,7 @@ const migrateOptions = async () => {
           Цвет: 25,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
 
       if (brand.name === "Mio Senso") {
@@ -428,13 +422,13 @@ const migrateOptions = async () => {
           Цвет: 28,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       if (brand.name === "Aleksandra") {
         const options = getOptions({
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
 
       if (brand.name === "Anna") {
@@ -442,28 +436,28 @@ const migrateOptions = async () => {
           Цвет: 29,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       if (brand.name === "Marilyn") {
         const options = getOptions({
           Цвет: 30,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       if (brand.name === "Knittex") {
         const options = getOptions({
           Цвет: 31,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
       if (brand.name === "Arti Katamino") {
         const options = getOptions({
           Цвет: 32,
           Размер: 14,
         })
-      await  saveOptions(brand, options)
+        await saveOptions(brand, options)
       }
     })
   )

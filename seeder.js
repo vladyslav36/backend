@@ -1,16 +1,16 @@
-const mongoose =require('mongoose') 
-const Product =require('./models/productModel') 
-const Order =require('./models/orderModel') 
-const User = require('./models/userModel')
-const Category = require('./models/categoryModel')
-const CurrencyRate = require('./models/currencyRateModel')
-const fs=require('fs-extra')
-const dotenv =require('dotenv') 
-const products =require('./data/products') 
-const users =require('./data/users') 
-const categories =require('./data/categories') 
-const currencyRate =require('./data/currencyRate') 
-const connectDb =require('./config/db') 
+const mongoose = require("mongoose")
+const Product = require("./models/productModel")
+const Order = require("./models/orderModel")
+const User = require("./models/userModel")
+const Category = require("./models/categoryModel")
+const CurrencyRate = require("./models/currencyRateModel")
+const fs = require("fs-extra")
+const dotenv = require("dotenv")
+const products = require("./data/products")
+const users = require("./data/users")
+const categories = require("./data/categories")
+const currencyRate = require("./data/currencyRate")
+const connectDb = require("./config/db")
 
 dotenv.config({ path: "./config/.env" })
 connectDb()
@@ -23,18 +23,16 @@ const importData = async () => {
     await Category.deleteMany()
     // await CurrencyRate.deleteMany()
     const createdUsers = await User.insertMany(users)
-    
+
     const adminUser = createdUsers[0]._id
-    
+
     // const sampleProducts = products.map(product => ({...product,user:adminUser}))
-    // const sampleCategories = categories.map(category => ({...category,parentCategory:adminUser}))
-    
-    
-    
+    // const sampleCategories = categories.map(category => ({...category,parent:adminUser}))
+
     // await Product.insertMany (sampleProducts)
     // await Category.insertMany(sampleCategories)
     // await CurrencyRate.insertMany(currencyRate)
-    console.log('Data imported')
+    console.log("Data imported")
     process.exit()
   } catch (error) {
     console.log(error)
@@ -48,8 +46,8 @@ const destroyData = async () => {
     // await User.deleteMany()
     await Category.deleteMany()
     // await CurrencyRate.deleteMany()
-    await fs.emptyDir('./upload/images/category')
-    console.log('Data destroyed')
+    await fs.emptyDir("./upload/images/category")
+    console.log("Data destroyed")
     process.exit()
   } catch (error) {
     console.log(error)
@@ -57,10 +55,8 @@ const destroyData = async () => {
   }
 }
 
-if (process.argv[2] === '-d') {
+if (process.argv[2] === "-d") {
   destroyData()
 } else {
   importData()
 }
-
-

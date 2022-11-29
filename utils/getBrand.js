@@ -3,7 +3,9 @@ const { idToString } = require("./idToString")
 exports.getBrand = (category, categories) => {
   let result = category
   const findParent = (item) => {
-    const parent = categories.find((elem) =>idToString(elem._id) ===idToString(item.parentCategoryId))
+    const parent = categories.find(
+      (elem) => idToString(elem._id) === idToString(item.parentId)
+    )
     if (parent) {
       result = parent
       findParent(parent)
@@ -13,9 +15,6 @@ exports.getBrand = (category, categories) => {
   if (category) {
     findParent(category)
   }
-    
-  
-  
 
   return result
 }

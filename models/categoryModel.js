@@ -1,37 +1,36 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
+const CategorySchema = mongoose.Schema(
+  {
+    name: String,
+    slug: String,
+    description: { type: String, default: "" },
+    image: String,
+    options: {
+      type: Object,
+      default: {},
+    },
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+    },
+    brandId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+    },
+    parent: { type: String, default: "" },
 
-
-const CategorySchema = mongoose.Schema({
-  name: String,
-  slug:String,
-  description: { type: String, default: '' },
-  image: String,
-  options: {
-    type: Object,
-    default: {}
+    qntProducts: { type: Number, default: 0 },
+    // level: { type: Number, default: 0 }
   },
-  parentCategoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    default:null
-  },
-  brandId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-    default:null
-  },
-  parentCategory: { type: String, default: '' },
-  
-  qntProducts:{type:Number,default:0},
-  // level: { type: Number, default: 0 }
-  
-}, {
-  minimize:false,
-  timestamps:true
-})
+  {
+    minimize: false,
+    timestamps: true,
+  }
+)
 
+const Category = mongoose.model("Category", CategorySchema)
 
-const Category = mongoose.model('Category', CategorySchema)
-
-module.exports=Category
+module.exports = Category
