@@ -5,6 +5,7 @@ const sharp = require("sharp")
 const { removeImage } = require("../utils/handleImages")
 const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
+const { setQntCatalogProducts } = require("../utils/setQntCatalogProducts")
 
 exports.getShowcaseProducts = asyncHandler(async (req, res, next) => {
   const showcaseProducts = await Product.find({ isShowcase: true })
@@ -14,9 +15,14 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
   const products = await Product.find()
   res.status(200).json({ products })
 })
-exports.getProductsCategoryId = asyncHandler(async (req, res, next) => {
+exports.getProductsCategoryId = asyncHandler(async (req, res) => {
   const categoryId = req.params.id
   const products = await Product.find({ categoryId })
+  res.status(200).json({ products })
+})
+exports.getProductsCatalogId = asyncHandler(async (req, res) => {
+  const catalogId = req.params.id
+  const products = await Product.find({ catalogId })
   res.status(200).json({ products })
 })
 
@@ -120,6 +126,7 @@ exports.addProducts = asyncHandler(async (req, res) => {
   const data = await product.save()
 
   setQntProducts()
+  setQntCatalogProducts()
   res.status(200).json({ data })
 })
 exports.updateProduct = asyncHandler(async (req, res) => {
@@ -245,6 +252,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
   )
 
   setQntProducts()
+  setQntCatalogProducts()  
   res.status(200).json({product:productUp })
 })
   exports.deleteProduct = asyncHandler(async (req, res, next) => {
@@ -265,5 +273,6 @@ exports.updateProduct = asyncHandler(async (req, res) => {
 
     await Product.deleteOne({ _id: id })
     setQntProducts()
+    setQntCatalogProducts()
     res.status(200).json({ message: "success" })
   })

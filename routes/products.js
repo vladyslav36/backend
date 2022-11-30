@@ -10,6 +10,7 @@ const {
   updateProduct,
   getSearchProducts,  
   getProductsCategoryId,
+  getProductsCatalogId,
   getEditSearchProducts,
   
 } = require("../controllers/products")
@@ -25,6 +26,7 @@ router.route("/search").get(getSearchProducts)
 router.route("/edit_search").post(getEditSearchProducts)
 
 router.route("/category/:id").get(getProductsCategoryId)
+router.route("/catalog/:id").get(getProductsCatalogId)
 
 router.route("/showcase").get(getShowcaseProducts)
 

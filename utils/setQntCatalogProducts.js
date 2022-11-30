@@ -20,7 +20,7 @@ exports.setQntCatalogProducts = asyncHandler(async () => {
         })
       } else {
         const prodInCategory = products.filter(
-          (item) => idToString(item.categoryId) === idToString(catalog._id)
+          (item) => idToString(item.catalogId) === idToString(catalog._id)
         )
 
         count += prodInCategory.length

@@ -64,8 +64,7 @@ exports.updateCatalog = asyncHandler(async (req, res) => {
 })
 
 exports.deleteCatalog = asyncHandler(async (req, res) => {
-  const { id } = req.params
-  console.log(id)
+  const { id } = req.params  
   await Catalog.deleteOne({_id:id})
   res.status(200).json({message:'Каталог успешно удален'})
 })
