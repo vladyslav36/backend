@@ -39,6 +39,7 @@ exports.updateCatalog = asyncHandler(async (req, res) => {
   
   const { name, parentId, parent, _id } = JSON.parse(req.body.values)
   const { imageClientPath } = req.body
+  console.log(imageClientPath)
   const root = process.env.ROOT_NAME
   const catalog = await Catalog.findOne({ _id })
   let image

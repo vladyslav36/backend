@@ -48,7 +48,7 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
 })
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const { slug } = req.params
-  const product = await Product.findOne({ slug }).populate("categoryId brandId")
+  const product = await Product.findOne({ slug }).populate("categoryId brandId catalogId")
 
   res.status(200).json({ product })
 })
