@@ -32,15 +32,34 @@ exports.addCategory = asyncHandler(async (req, res) => {
     req.body.values
   )
   const root = process.env.ROOT_NAME
-  let image
+  let image,price,catalog
   if (req.files === null) {
     image = ""
+    price = ''
+    catalog=''
   } else {
-    const file = req.files.image
+    if ('image' in req.files) {
+       const file = req.files.image
     const fileName = path.parse(file.name).name
     const fileExt = path.parse(file.name).ext
     image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
     file.mv(`${root}${image}`)
+    }
+    if ('price' in req.files) {
+       const file = req.files.price
+    const fileName = path.parse(file.name).name
+    const fileExt = path.parse(file.name).ext
+    price = `/upload/prices/${getSlug(fileName)}${fileExt}`
+    file.mv(`${root}${price}`)
+    }
+    if ('catalog' in req.files) {
+       const file = req.files.catalog
+    const fileName = path.parse(file.name).name
+    const fileExt = path.parse(file.name).ext
+    catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
+    file.mv(`${root}${catalog}`)
+    }
+   
   }
 
   const slug = getSlug(name)
@@ -51,6 +70,8 @@ exports.addCategory = asyncHandler(async (req, res) => {
     parentId,
     description,
     image,
+    price,
+    catalog,
     options,
     slug,
   })
@@ -67,27 +88,61 @@ exports.updateCategory = asyncHandler(async (req, res) => {
     req.body.values
   )
   const imageClientPath = req.body.imageClientPath
+  const priceClientPath = req.body.priceClientPath
+  const catalogClientPath = req.body.catalogClientPath
   const root = process.env.ROOT_NAME
 
   const category = await Category.findOne({ _id })
 
   const slug = getSlug(name)
 
-  let image
-  if (req.files === null) {
+  let image, price, catalog
+  // Здесь прайс и каталог загружаемые для скачивания прайс и каталог товаров
+  if (req.files===null) {
     if (imageClientPath) {
-      image = `/upload/images/category/${path.basename(imageClientPath)}`
+      // image = `/upload/images/category/${path.basename(imageClientPath)}`
+      image=category.image
     } else {
       image = ""
       await removeImage(category.image)
     }
+    if (priceClientPath) {      
+      price=category.price
+    } else {
+      price = ""
+      await removeImage(category.price)
+    }
+    if (catalogClientPath) {      
+      catalog=category.catalog
+    } else {
+      catalog = ""
+      await removeImage(category.catalog)
+    }
   } else {
-    const file = req.files.image
+    if ('image' in req.files) {
+       const file = req.files.image
     const fileName = path.parse(file.name).name
     const fileExt = path.parse(file.name).ext
     image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
     file.mv(`${root}${image}`)
     await removeImage(category.image)
+    }
+    if ('price' in req.files) {
+      const file = req.files.price
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      price = `/upload/prices/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${price}`)
+      await removeImage(category.price)
+    }
+    if ('catalog' in req.files) {
+       const file = req.files.catalog
+       const fileName = path.parse(file.name).name
+       const fileExt = path.parse(file.name).ext
+       catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
+       file.mv(`${root}${catalog}`)
+       await removeImage(category.catalog)
+    }
   }
 
   const categories = await Category.find()
@@ -100,6 +155,8 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       parentId,
       description,
       image,
+      price,
+      catalog,
       options,
       slug,
       brandId,
@@ -137,12 +194,18 @@ exports.updateCategory = asyncHandler(async (req, res) => {
     )
   }
   res.status(200).json({ category: categoryUp })
+
+  
 })
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params
   const category = await Category.findOne({ _id: id })
   await removeImage(category.image)
+  if (category.parentId === null) {
+    await removeImage(category.price)
+    await removeImage(category.catalog)
+  }
   await Category.deleteOne({ _id: id })
   setQntProducts()
   res.status(200).json({ message: "success" })

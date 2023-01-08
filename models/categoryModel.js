@@ -23,8 +23,13 @@ const CategorySchema = mongoose.Schema(
     parent: { type: String, default: "" },
 
     qntProducts: { type: Number, default: 0 },
-    // level: { type: Number, default: 0 }
+    // Каталог товаров этого бренда
+    catalog: { type: String, default: '' },
+    // Прайс товаров этого бренда
+    price:{type:String,default:''}
+    
   },
+  
   {
     minimize: false,
     timestamps: true,
