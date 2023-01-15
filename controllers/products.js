@@ -191,10 +191,10 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         await file.mv(`${root}${image}`)
         await sharp(`${root}${image}`)
           .resize({ width: 200 })
-          .toFile(`${root}${imageSm}`)
+          .toFile(`${root}${imageMd}`)
         await sharp(`${root}${image}`)
           .resize({ width: 50 })
-          .toFile(`${root}${imageMd}`)
+          .toFile(`${root}${imageSm}`)
         return { image, imageSm, imageMd }
       })
     )
