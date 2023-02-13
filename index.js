@@ -19,11 +19,15 @@ const orderRouter = require("./routes/order")
 const informationRouter = require("./routes/information")
 const fileUpload = require("express-fileupload")
 const { urlencoded } = require("express")
+const { tBotHandler, vBotHandler } = require("./bots.js")
 
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
 
 connectDb()
+
+const tBot = tBotHandler()
+const vBot = vBotHandler()
 
 const app = express()
 
@@ -31,19 +35,20 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
 app.use(cors())
-app.use(express.json())
+
 app.use(urlencoded({extended:false}))
 app.use(fileUpload())
-app.use("/upload", express.static(path.join(__dirname, "/upload")))
-app.use("/api/user", userRouter)
-app.use("/api/products", productsRouter)
-app.use("/api/categories", categoriesRouter)
-app.use("/api/cart", cartRouter)
-app.use("/api/currencyrate", currencyRateRouter)
-app.use("/api/search", searchRouter)
-app.use("/api/order", orderRouter)
-app.use("/api/information", informationRouter)
-app.use('/api/catalogs',catalogsRouter)
+app.use("/upload",express.json(), express.static(path.join(__dirname, "/upload")))
+app.use("/api/user",express.json(), userRouter)
+app.use("/api/products",express.json(), productsRouter)
+app.use("/api/categories",express.json(), categoriesRouter)
+app.use("/api/cart",express.json(), cartRouter)
+app.use("/api/currencyrate",express.json(), currencyRateRouter)
+app.use("/api/search",express.json(), searchRouter)
+app.use("/api/order",express.json(), orderRouter)
+app.use("/api/information",express.json(), informationRouter)
+app.use('/api/catalogs', express.json(), catalogsRouter)
+app.use("/viber/webhook", vBot.middleware())
 app.use(notFound)
 app.use(errorHandler)
 
