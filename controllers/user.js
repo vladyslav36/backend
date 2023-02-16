@@ -1,6 +1,7 @@
 const User = require('../models/userModel')
 const asyncHandler=require('express-async-handler')
 const generateToken = require('../utils/generateToken')
+const vBot=require('../index')
 
 // exports.userAuth = asyncHandler(async (req, res) => {
 
@@ -22,9 +23,9 @@ const generateToken = require('../utils/generateToken')
 // })
 
 exports.login = asyncHandler(async (req, res) => {
-  const { authKey, authMethod } = req.body  
-  const user = await User.findOne({ authKey,authMethod })
-  if (user) {
+  const { authKey, authMethod } = req.body    
+  const user = await User.findOne({ authKey, authMethod })  
+  if (user) {    
     res.status(200).json( user )
   } else {
     res.status(401)

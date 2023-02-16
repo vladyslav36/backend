@@ -4,6 +4,7 @@ const TelegramBot = require("node-telegram-bot-api")
 const viberBot = require("viber-Bot").Bot
 const botEvents = require("viber-bot").Events
 const TextMessage = require("viber-bot").Message.Text
+const FileMessage = require("viber-bot").Message.File
 
 exports.tBotHandler = () => {
   const telegramToken = process.env.TELEGRAM_TOKEN
@@ -54,8 +55,9 @@ exports.vBotHandler = () => {
     .catch((error) => console.log(`This is error ${error.message}`))
 
   vBot.onConversationStarted(
+   
     async (userProfile, isSubscribed, authKey = context, onFinish) => {
-      try {
+      try {               
         let user = await User.findOne({ userId: userProfile.id })
         if (!user) {
           user = await User.create({

@@ -19,15 +19,23 @@ const orderRouter = require("./routes/order")
 const informationRouter = require("./routes/information")
 const fileUpload = require("express-fileupload")
 const { urlencoded } = require("express")
-const { tBotHandler, vBotHandler } = require("./bots.js")
+const { tBotHandler, vBotHandler } = require("./bots")
+
+
+
 
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
 
 connectDb()
 
+
+
 const tBot = tBotHandler()
 const vBot = vBotHandler()
+
+
+
 
 const app = express()
 
@@ -35,14 +43,20 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
 }
 app.use(cors())
+app.use((req, res, next) => {
+  req.tBot = tBot
+  req.vBot = vBot
+  next()
+})
 
 app.use(urlencoded({extended:false}))
 app.use(fileUpload())
 app.use("/upload",express.json(), express.static(path.join(__dirname, "/upload")))
+app.use("/temp",express.json(), express.static(path.join(__dirname, "/temp")))
 app.use("/api/user",express.json(), userRouter)
 app.use("/api/products",express.json(), productsRouter)
 app.use("/api/categories",express.json(), categoriesRouter)
-app.use("/api/cart",express.json(), cartRouter)
+// app.use("/api/cart",express.json(), cartRouter)
 app.use("/api/currencyrate",express.json(), currencyRateRouter)
 app.use("/api/search",express.json(), searchRouter)
 app.use("/api/order",express.json(), orderRouter)
