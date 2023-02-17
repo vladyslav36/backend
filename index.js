@@ -1,5 +1,7 @@
 
 const path = require("path")
+const http = require('http')
+const socketio=require('socket.io')
 const express = require("express")
 const cors = require("cors")
 const dotenv = require("dotenv")
@@ -31,13 +33,20 @@ connectDb()
 
 
 
-const tBot = tBotHandler()
-const vBot = vBotHandler()
+
 
 
 
 
 const app = express()
+
+const server = http.createServer(app)
+const io = socketio(server)
+
+
+
+const tBot = tBotHandler(io)
+const vBot = vBotHandler(io) 
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"))
@@ -67,7 +76,7 @@ app.use(notFound)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
-app.listen(
+server.listen(
   PORT,()=>
   console.log(
     `Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`

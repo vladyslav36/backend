@@ -6,7 +6,7 @@ const botEvents = require("viber-bot").Events
 const TextMessage = require("viber-bot").Message.Text
 const FileMessage = require("viber-bot").Message.File
 
-exports.tBotHandler = () => {
+exports.tBotHandler = (io) => {
   const telegramToken = process.env.TELEGRAM_TOKEN
   const tBot = new TelegramBot(telegramToken, {
     polling: true,
@@ -30,12 +30,14 @@ exports.tBotHandler = () => {
       const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
         expiresIn: "60d",
       })
+
       await user.updateOne({ token, authKey })
+
       tBot.sendMessage(
         userId,
-        `Привет ${msg.from.first_name}. Вы успешно авторизировались. Теперь вернитесь на вкладку сайта и нажмите Войти`
+        `Привет ${msg.from.first_name}. Вы успешно авторизировались на сайте Karmen`
       )
-      
+      io.emit("authkey", authKey)
     } catch (error) {
       console.log(`Ошибка при авторизации в телеграм. ${error.message}`)
     }
@@ -43,7 +45,7 @@ exports.tBotHandler = () => {
   return tBot
 }
 
-exports.vBotHandler = () => {
+exports.vBotHandler = (io) => {
   const vBot = new viberBot({
     authToken: process.env.VIBER_TOKEN,
     name: process.env.VIBER_NAME,
@@ -55,9 +57,8 @@ exports.vBotHandler = () => {
     .catch((error) => console.log(`This is error ${error.message}`))
 
   vBot.onConversationStarted(
-   
     async (userProfile, isSubscribed, authKey = context, onFinish) => {
-      try {               
+      try {
         let user = await User.findOne({ userId: userProfile.id })
         if (!user) {
           user = await User.create({
@@ -74,9 +75,10 @@ exports.vBotHandler = () => {
         vBot.sendMessage(
           userProfile,
           new TextMessage(
-            `Привет ${userProfile.name}, вы успешно авторизировались. Для входа на сайт закройте окно вайбера и нажмите кнопку войти`
+            `Привет ${userProfile.name}, вы успешно авторизировались на сайте Karmen`
           )
         )
+        io.emit("authkey", authKey)
       } catch (error) {
         console.log(`Ошибка при авторизации в Viber. ${error.message}`)
       }
