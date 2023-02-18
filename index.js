@@ -13,17 +13,14 @@ const productsRouter = require("./routes/products")
 const categoriesRouter = require("./routes/categories")
 const catalogsRouter=require('./routes/catalogs')
 const currencyRateRouter = require("./routes/currencyRate")
-const cartRouter = require("./routes/cart")
 const userRouter = require("./routes/user")
 const searchRouter = require("./routes/search")
-// const optionsRouter=require('./routes/options')
 const orderRouter = require("./routes/order")
 const informationRouter = require("./routes/information")
 const fileUpload = require("express-fileupload")
 const { urlencoded } = require("express")
 const { tBotHandler, vBotHandler } = require("./bots")
-
-
+const { cleanUpTempFolder } = require("./utils/cleanUpTempFolder.js")
 
 
 dotenv.config({ path: "./config/.env" })
@@ -31,19 +28,15 @@ process.env.ROOT_NAME = path.dirname(__filename)
 
 connectDb()
 
-
-
-
-
-
-
+// Проверка и удаление старый файлов(больше недели) в папке temp. Раз в сутки
+const intervalId = setInterval(() => {
+  cleanUpTempFolder()
+},24*3600*1000)
 
 const app = express()
 
 const server = http.createServer(app)
 const io = socketio(server)
-
-
 
 const tBot = tBotHandler(io)
 const vBot = vBotHandler(io) 
@@ -65,7 +58,6 @@ app.use("/temp",express.json(), express.static(path.join(__dirname, "/temp")))
 app.use("/api/user",express.json(), userRouter)
 app.use("/api/products",express.json(), productsRouter)
 app.use("/api/categories",express.json(), categoriesRouter)
-// app.use("/api/cart",express.json(), cartRouter)
 app.use("/api/currencyrate",express.json(), currencyRateRouter)
 app.use("/api/search",express.json(), searchRouter)
 app.use("/api/order",express.json(), orderRouter)

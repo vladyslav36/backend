@@ -3,7 +3,6 @@ const asyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
 const TextMessage = require("viber-bot").Message.Text
 const FileMessage = require("viber-bot").Message.File
-const FileUrl = require("viber-bot").Message.Url
 const path = require("path")
 
 const createXLS = require("../utils/createXLS")
