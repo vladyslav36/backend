@@ -78,7 +78,7 @@ exports.vBotHandler = (io) => {
         vBot.sendMessage(
           userProfile,
           new TextMessage(
-            `Привет ${userProfile.name}, вы успешно авторизировались на сайте Karmen`
+            `Привет ${userProfile.name}, вы успешно авторизировались на сайте Karmen. Для получения сообщений о состоянии заказа отправьте любое сообщение этому боту`
           )
         )
         io.emit("authkey", authKey)
