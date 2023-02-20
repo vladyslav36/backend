@@ -60,6 +60,7 @@ exports.vBotHandler = (io) => {
     async (userProfile, isSubscribed, authKey = context, onFinish) => {
       try {
         let user = await User.findOne({ userId: userProfile.id })
+        console.log(user)
         if (!user) {
           user = await User.create({
             authKey,
@@ -67,7 +68,9 @@ exports.vBotHandler = (io) => {
             userName: userProfile.name,
             authMethod: "Viber",
           })
+          
         }
+        
         const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
           expiresIn: "60d",
         })
