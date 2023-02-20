@@ -60,7 +60,7 @@ exports.vBotHandler = (io) => {
     async (userProfile, isSubscribed, authKey = context, onFinish) => {
       try {
         let user = await User.findOne({ userId: userProfile.id })
-        console.log(user)
+        
         if (!user) {
           user = await User.create({
             authKey,
