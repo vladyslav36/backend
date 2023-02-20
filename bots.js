@@ -78,9 +78,17 @@ exports.vBotHandler = (io) => {
         vBot.sendMessage(
           userProfile,
           new TextMessage(
-            `Привет ${userProfile.name}, вы успешно авторизировались на сайте Karmen. Для получения сообщений о состоянии заказа отправьте любое сообщение этому боту`
+            `Привет ${userProfile.name}, вы успешно авторизировались на сайте Karmen`
           )
         )
+        if (!isSubscribed) {
+          vBot.sendMessage(
+            userProfile,
+            new TextMessage(
+              `Для получения сообщений о состоянии заказа отправьте любое сообщение этому боту`
+            )
+          )
+        }
         io.emit("authkey", authKey)
       } catch (error) {
         console.log(`Ошибка при авторизации в Viber. ${error.message}`)
