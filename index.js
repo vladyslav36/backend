@@ -1,10 +1,12 @@
 
+
+const dotenv = require("dotenv")
+
 const path = require("path")
 const http = require('http')
 const socketio=require('socket.io')
 const express = require("express")
 const cors = require("cors")
-const dotenv = require("dotenv")
 const connectDb = require("./config/db.js")
 const morgan = require("morgan")
 const { notFound } = require("./middleware/notFound.js")
@@ -22,9 +24,10 @@ const { urlencoded } = require("express")
 const { tBotHandler, vBotHandler } = require("./bots")
 const { cleanUpTempFolder } = require("./utils/cleanUpTempFolder.js")
 
-
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
+
+
 
 connectDb()
 

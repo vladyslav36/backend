@@ -51,7 +51,7 @@ const userSchema = mongoose.Schema(
     minimize: false,
   }
 )
-
-const User = mongoose.model("User", userSchema)
+// in production mode         User
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
