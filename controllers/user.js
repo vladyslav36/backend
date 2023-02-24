@@ -15,7 +15,10 @@ exports.login = asyncHandler(async (req, res) => {
   }
   
 })
-
+exports.getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({})
+  res.status(200).json({users})
+})
 
 
 exports.updateUser = asyncHandler(async (req, res) => {
@@ -23,10 +26,11 @@ exports.updateUser = asyncHandler(async (req, res) => {
   const id=req.user._id
   const user = await User.findById(id)
   user.delivery=delivery
-  user.phone = userPhone
+  user.phone = userPhone  
   const newUser = await user.save()  
-  res.status(200).json(newUser)
-  
+  res.status(200).json(newUser)  
 })
+
+
 
 
