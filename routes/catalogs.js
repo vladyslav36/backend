@@ -5,11 +5,14 @@ const router =require('express').Router()
 
 router.route('/')
   .get(getAllCatalogs)
-  .post(protect,protectAdmin, addCatalog)
-  .put(protect,protectAdmin, updateCatalog)
+  // .post(protect,protectAdmin, addCatalog)
+  .post(addCatalog)
+  // .put(protect,protectAdmin, updateCatalog)
+  .put( updateCatalog)
 
 router.route('/:id')
   .get(getCatalogById)
-  .delete(protect,protectAdmin, deleteCatalog)
+  // .delete(protect,protectAdmin, deleteCatalog)
+  .delete( deleteCatalog)
 
   module.exports=router

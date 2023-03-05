@@ -18,7 +18,8 @@ const {
 router
   .route("/")
   .get(getAllProducts)
-  .post(protect,protectAdmin, addProducts)
+  // .post(protect,protectAdmin, addProducts)
+  .post( addProducts)
   .put(protect,protectAdmin, updateProduct)
 
 router.route("/search").get(getSearchProducts)

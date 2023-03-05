@@ -52,6 +52,6 @@ const userSchema = mongoose.Schema(
   }
 )
 // in production mode         User
-const User = mongoose.model('User', userSchema)
+const User = mongoose.model('UserDev', userSchema)
 
 module.exports = User
