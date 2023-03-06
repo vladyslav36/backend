@@ -18,9 +18,10 @@ const {
 router
   .route("/")
   .get(getAllProducts)
-  // .post(protect,protectAdmin, addProducts)
-  .post( addProducts)
+  .post(protect,protectAdmin, addProducts)
+ 
   .put(protect,protectAdmin, updateProduct)
+ 
 
 router.route("/search").get(getSearchProducts)
 
@@ -34,5 +35,6 @@ router.route("/showcase").get(getShowcaseProducts)
 router.route("/:slug").get(getProduct)
 
 router.route("/:id").delete(protect,protectAdmin, deleteProduct)
+
 
 module.exports = router

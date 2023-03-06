@@ -6,10 +6,10 @@ const {getAllCategories,addCategory,updateCategory,deleteCategory,getBrands,getC
 router
   .route('/')
   .get(getAllCategories)
-  // .post(protect,protectAdmin, addCategory)
-  .post( addCategory)
-  // .put(protect,protectAdmin, updateCategory)
-  .put( updateCategory)
+  .post(protect,protectAdmin, addCategory)
+ 
+  .put(protect,protectAdmin, updateCategory)
+ 
 
 router
   .route('/brands')
@@ -17,8 +17,8 @@ router
 
 router.route('/:id')
   .get(getCategoryById)
-  // .delete(protect, protectAdmin, deleteCategory)
-  .delete( deleteCategory)
+  .delete(protect, protectAdmin, deleteCategory)
+ 
 
 router.route('/slug/:slug')
   .get(getCategoryBySlug)
