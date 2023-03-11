@@ -27,11 +27,12 @@ exports.getProductsCatalogId = asyncHandler(async (req, res) => {
 })
 
 exports.getSearchProducts = asyncHandler(async (req, res) => {
-  const { string } = req.query
+  const { string } = req.query  
+  const str = string.replace(/[^A-Za-zА-Яа-я 0-9]/g, "")  
   const products = await Product.find({
     $or: [
-      { name: { $regex: string, $options: "i" } },
-      { model: { $regex: string, $options: "i" } },
+      { name: { $regex: str, $options: "i" } },
+      { model: { $regex: str, $options: "i" } },
     ],
   }).limit(10)
 
