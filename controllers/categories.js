@@ -7,9 +7,9 @@ const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
 const { getBrand } = require("../utils/getBrand")
 
-exports.getAllCategories = asyncHandler(async (req, res, next) => {
+exports.getAllCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find()
-  res.status(200).json({ categories })
+  res.status(200).json({ categories })  
 })
 exports.getCategoryById = asyncHandler(async (req, res) => {
   const { id } = req.params

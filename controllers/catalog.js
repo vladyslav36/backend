@@ -8,7 +8,7 @@ const { removeImage } = require('../utils/handleImages.js')
 
 exports.getAllCatalogs = asyncHandler(async(req, res) => {
   const catalogs =await Catalog.find()
-  res.status(200).json({catalogs})
+  res.status(200).json({catalogs})  
 })
 
 exports.getCatalogById = asyncHandler(async (req, res) => {
