@@ -24,12 +24,14 @@ const { urlencoded } = require("express")
 const { tBotHandler, vBotHandler } = require("./bots")
 const { cleanUpTempFolder } = require("./utils/cleanUpTempFolder.js")
 
+
 dotenv.config({ path: "./config/.env" })
 process.env.ROOT_NAME = path.dirname(__filename)
 
 
 
 connectDb()
+
 
 // Проверка и удаление старый файлов(больше недели) в папке temp. Раз в сутки
 const intervalId = setInterval(() => {
