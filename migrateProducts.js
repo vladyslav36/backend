@@ -15,17 +15,22 @@ const migrateProducts = async () => {
         {},
         ...Object.keys(options).map((option) => {
           return {
-            [option]: Object.keys(options[option].values)
+            [option]: Object.assign({}, ...Object.keys(options[option].values)
               .filter((item) => options[option].values[item].checked)
               .map((value) => ({
-                value: value,
+                [value]: {
                 price: options[option].values[value].price
                   ? options[option].values[value].price
-                  : product.price,
-              })),
+                    : product.price,
+                  isChanged: options[option].values[value].price ? true : false,
+                  barcode:''
+              }
+               
+              }))) 
           }
         })
       )
+
       await Product.findOneAndUpdate({ _id: product._id },{options:newOptions})
 
     })
