@@ -168,27 +168,24 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   if (parentId === null) {
     // в этом случае редактируется категория-бренд и нужно изменить все опции у всех товаров
     // которые относятся к этому бренду
+    const optionsArr=Object.keys(options)
     const products = await Product.find({ brandId: _id })
     await Promise.all(
       products.map(async (product) => {
-        const newOptions = { ...options }
-
-        if (Object.keys(newOptions).length) {
-          Object.keys(newOptions).forEach((option) => {
-            if (typeof product.options[option] === "object") {
-              newOptions[option].isChangePrice =
-                product.options[option].isChangePrice
-              Object.keys(newOptions[option].values).forEach((value) => {
-                if (typeof product.options[option].values[value] === "object") {
-                  newOptions[option].values[value].price =
-                    product.options[option].values[value].price
-                  newOptions[option].values[value].checked =
-                    product.options[option].values[value].checked
-                }
-              })
-            }
-          })
+        // сначала убираем из товара те опции которых не стало в бренде
+       const newOptions= Object.keys(product.options).reduce((acc, option) => {
+          if (optionsArr.includes(option)) {
+            acc[option]=product.options[option]
+          }
+          return acc
+       }, {})
+        // потом добавляем в товар ключ опции в формате [опцич]:{} которые появились в бренде
+        for (const option of optionsArr) {
+          if (!newOptions.hasOwnProperty(option)) {
+            newOptions[option] = {}
+          }
         }
+       
         await Product.updateOne({ _id: product._id }, { options: newOptions })
       })
     )
