@@ -25,30 +25,35 @@ const migrateProducts = async () => {
       //             isChanged: options[option].values[value].price ? true : false,
       //             barcode:''
       //         }
-               
-      //         }))) 
+
+      //         })))
       //     }
       //   })
       // )
       // --------------------------------------------------------------------------------
-      const newOptions = Object.assign({}, ...Object.keys(options).map(option => {        
-        return {
-          [option]: Object.assign({}, ...Object.keys(options[option]).map(value => {
-            const { barcode, ...newValue }=options[option][value]
-            return {
-              [value]:newValue
-            }     
-            
-          }))
-         
-        }
-      }))
-// ---------------------------------------------------------------------------------------
-      await Product.findOneAndUpdate({ _id: product._id },{options:newOptions})
+      // const newOptions = Object.assign({}, ...Object.keys(options).map(option => {
+      //   return {
+      //     [option]: Object.assign({}, ...Object.keys(options[option]).map(value => {
+      //       const { barcode, ...newValue }=options[option][value]
+      //       return {
+      //         [value]:newValue
+      //       }
 
+      //     }))
+
+      //   }
+      // }))
+
+      // await Product.findOneAndUpdate({ _id: product._id },{options:newOptions})
+      // ---------------------------------------------------------------------------------
+      const newOptions = Object.assign({}, ...Object.keys(options).sort().map(option => ({ [option]: options[option] })))
+      await Product.findOneAndUpdate(
+        { _id: product._id },
+        { options: newOptions }
+      )
     })
   )
- 
+
   process.exit()
 }
 
