@@ -10,12 +10,16 @@ connectDb()
 
 const migrateCategory = async () => {
   const categories = await Category.find({})
+  
  await Promise.all( categories.map(async category => {
     if (category.parent) return
-    
-    const newOptions = Object.assign({},...Object.keys(category.options).map(option => {
-     return {[option]:Object.keys(category.options[option].values)}
-   }))
+    // -----------------------------------
+    // const newOptions = Object.assign({},...Object.keys(category.options).map(option => {
+    //  return {[option]:Object.keys(category.options[option].values)}
+    // }))
+  //  -----------------------------------------
+   const newOptions = Object.assign({}, ...Object.keys(category.options).sort().map(option=>({[option]:category.options[option]})))
+   
     await Category.updateOne({ _id: category._id },{options:newOptions})
   }))
   process.exit()
