@@ -68,6 +68,14 @@ const ProductSchema = mongoose.Schema(
       type: Object,
       default: {}
     },
+    barcods: {
+      type: Object,
+      default: {}
+    },
+    barcode: {
+      type: String,
+      default:''
+    }
   },
   {
     timestamps: true,
