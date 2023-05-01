@@ -4,7 +4,8 @@ const asyncHandler=require('express-async-handler')
 exports.getPrice = asyncHandler(async (req, res) => { 
   const barcode = req.params.bc
   const doc = await Barcode.findOne({ barcode })
-  res.status(200).json({price:doc.price})
+
+  res.status(200).json({price:doc?doc.price:''})
 }) 
   
 
@@ -25,5 +26,7 @@ exports.savePrice = asyncHandler(
 )
 
 exports.deletePrice = asyncHandler(async (req, res) => {
-
+  const barcode = req.params.bc
+  await Barcode.deleteOne({ barcode })
+  res.status(200).json({message:'ok'})
 })
