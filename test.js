@@ -108,5 +108,17 @@ const copyBarcods = (existBc, newBc) => {
   return newBc
 }
 
-console.log(copyBarcods(barcods,newBarcods)) 
+// console.log(copyBarcods(barcods,newBarcods))
 
+const xlsToJson=require('convert-excel-to-json')
+
+const file = `${__dirname}/upload/prices/priselightstep-ed8691e0.xlsx`
+const rez = xlsToJson({
+  sourceFile: file,
+  columnToKey: {
+    B: 'name',
+    E:'price'
+  },
+  
+})
+console.log(rez)

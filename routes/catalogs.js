@@ -1,7 +1,8 @@
+const router = require('express').Router()
+
 const { getAllCatalogs, getCatalogById, addCatalog, deleteCatalog, updateCatalog } = require('../controllers/catalog')
 const { protect, protectAdmin }=require('../middleware/auth')
 
-const router =require('express').Router()
 
 router.route('/')
   .get(getAllCatalogs)
