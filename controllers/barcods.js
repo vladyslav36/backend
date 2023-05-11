@@ -10,7 +10,7 @@ exports.getPrice = asyncHandler(async (req, res) => {
 
 exports.getBarcods = asyncHandler(async (req, res) => {
   const barcods = await Barcode.find({})
-  res.status(200).json({barcods})
+  res.status(200).json({bcPrice:barcods})
 })
 
 exports.savePrice = asyncHandler(async (req, res) => {
