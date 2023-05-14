@@ -1,4 +1,5 @@
 const Product = require("../models/productModel")
+const Barcode=require('../models/barcodeModel')
 const { getSlug } = require("../utils/getSlug")
 const path = require("path")
 const sharp = require("sharp")
@@ -127,7 +128,11 @@ exports.addProducts = asyncHandler(async (req, res) => {
     currencyValue,
   })
   const data = await product.save()
-
+  if (barcode) {
+   await Barcode.findOneAndUpdate({ barcode }, { productId: product._id })    
+  } else {
+    console.log('start function barcods')
+}
   setQntProducts()
   setQntCatalogProducts()
   res.status(200).json({ data })

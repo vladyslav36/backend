@@ -9,6 +9,11 @@ const barcodeSchema = mongoose.Schema({
   price: {
     type: String,
     default:''
+  },
+  productId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    default:null
   }
 })
 
