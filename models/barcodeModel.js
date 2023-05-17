@@ -14,7 +14,10 @@ const barcodeSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
     default:null
-  }
+  },
+  crumbsArr: []
+}, {
+  minimize:false
 })
 
 module.exports=mongoose.model('Barcode',barcodeSchema)

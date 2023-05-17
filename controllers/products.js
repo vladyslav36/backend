@@ -1,5 +1,5 @@
 const Product = require("../models/productModel")
-const Barcode=require('../models/barcodeModel')
+const Barcode = require("../models/barcodeModel")
 const { getSlug } = require("../utils/getSlug")
 const path = require("path")
 const sharp = require("sharp")
@@ -28,12 +28,12 @@ exports.getProductsCatalogId = asyncHandler(async (req, res) => {
 })
 
 exports.getSearchProducts = asyncHandler(async (req, res) => {
-  const { string } = req.query  
-  const str = string.replace(/[^A-Za-zА-Яа-я 0-9]/g, "")    
+  const { string } = req.query
+  const str = string.replace(/[^A-Za-zА-Яа-я 0-9]/g, "")
   const products = await Product.find({
     $or: [
       { name: { $regex: str, $options: "i" } },
-      { model: { $regex: str, $options: "i" } },     
+      { model: { $regex: str, $options: "i" } },
     ],
   }).limit(10)
 
@@ -50,7 +50,9 @@ exports.getEditSearchProducts = asyncHandler(async (req, res) => {
 })
 exports.getProduct = asyncHandler(async (req, res, next) => {
   const { slug } = req.params
-  const product = await Product.findOne({ slug }).populate("categoryId brandId catalogId")
+  const product = await Product.findOne({ slug }).populate(
+    "categoryId brandId catalogId"
+  )
 
   res.status(200).json({ product })
 })
@@ -59,7 +61,7 @@ exports.addProducts = asyncHandler(async (req, res) => {
     name,
     model,
     brand,
-    brandId,    
+    brandId,
     categoryId,
     catalogId,
     isShowcase,
@@ -114,7 +116,7 @@ exports.addProducts = asyncHandler(async (req, res) => {
     slug,
     images,
     imagesMd,
-    imagesSm,    
+    imagesSm,
     categoryId,
     catalogId,
     description,
@@ -129,10 +131,29 @@ exports.addProducts = asyncHandler(async (req, res) => {
   })
   const data = await product.save()
   if (barcode) {
-   await Barcode.findOneAndUpdate({ barcode }, { productId: product._id })    
+    await Barcode.findOneAndUpdate({ barcode }, { productId: data._id })
   } else {
-    console.log('start function barcods')
-}
+    if (Object.keys(barcods).length) {
+      //  await Barcode.updateMany({ productId: data._id },{productId:null})
+      
+      const deepBc = async (barcods) => {
+        for (let key in barcods) {
+          if (typeof barcods[key] === "string") {
+            await Barcode.findOneAndUpdate(
+              { barcode: barcods[key] },
+              { productId: data._id }
+            )
+          } else {
+           await deepBc(barcods[key])
+          }
+        }
+      }
+     await deepBc(barcods)
+    }
+  }
+  // убираем из базы пустышки введенные но ненужные
+  await Barcode.deleteMany({ productId: null })
+
   setQntProducts()
   setQntCatalogProducts()
   res.status(200).json({ data })
@@ -143,7 +164,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     name,
     model,
     brand,
-    brandId,    
+    brandId,
     categoryId,
     catalogId,
     options,
@@ -236,7 +257,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     })
   )
 
-  const productUp=await Product.findOneAndUpdate(
+  const productUp = await Product.findOneAndUpdate(
     { _id },
     {
       name,
@@ -246,7 +267,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
       slug,
       images,
       imagesMd,
-      imagesSm,      
+      imagesSm,
       categoryId,
       catalogId,
       options,
@@ -258,31 +279,58 @@ exports.updateProduct = asyncHandler(async (req, res) => {
       price,
       retailPrice,
       currencyValue,
-    },{new:true}
+    },
+    { new: true }
   )
 
+   //  сначала устанавливаем для всех barcode соответствующие этому продукту productId:null
+  await Barcode.updateMany({ productId: _id }, { productId: null })
+  
+  if (barcode) {   
+    await Barcode.findOneAndUpdate({ barcode }, { productId: _id })   
+  } else {
+     if (Object.keys(barcods).length) {     
+      // потом заполняем в соответствии с barcods
+       const deepBc = async (barcods) => {
+         for (let key in barcods) {
+           if (typeof barcods[key] === "string") {            
+             await Barcode.findOneAndUpdate(
+               { barcode: barcods[key] },
+               { productId: _id }
+             )
+           } else {
+            await deepBc(barcods[key])
+           }
+         }
+       }
+      await deepBc(barcods)
+     }
+  }
+  // и затем убираем лишние
+  await Barcode.deleteMany({ productId: null })
+  
   setQntProducts()
-  setQntCatalogProducts()  
-  res.status(200).json({product:productUp })
+  setQntCatalogProducts()
+  res.status(200).json({ product: productUp })
 })
-  exports.deleteProduct = asyncHandler(async (req, res, next) => {
-    const { id } = req.params
-    const product = await Product.findOne({ _id: id })
+exports.deleteProduct = asyncHandler(async (req, res, next) => {
+  const { id } = req.params
+  const product = await Product.findOne({ _id: id })
 
-    await Promise.all(
-      product.images.map(async (item) => await removeImage(item))
-      // product.imagesMd.map(async (item) => await removeImage(item))
-      // product.imagesSm.map(async (item) => await removeImage(item))
-    )
-    await Promise.all(
-      product.imagesMd.map(async (item) => await removeImage(item))
-    )
-    await Promise.all(
-      product.imagesSm.map(async (item) => await removeImage(item))
-    )
+  await Promise.all(
+    product.images.map(async (item) => await removeImage(item))
+    // product.imagesMd.map(async (item) => await removeImage(item))
+    // product.imagesSm.map(async (item) => await removeImage(item))
+  )
+  await Promise.all(
+    product.imagesMd.map(async (item) => await removeImage(item))
+  )
+  await Promise.all(
+    product.imagesSm.map(async (item) => await removeImage(item))
+  )
 
-    await Product.deleteOne({ _id: id })
-    setQntProducts()
-    setQntCatalogProducts()
-    res.status(200).json({ message: "success" })
-  })
+  await Product.deleteOne({ _id: id })
+  setQntProducts()
+  setQntCatalogProducts()
+  res.status(200).json({ message: "success" })
+})
