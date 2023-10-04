@@ -40,32 +40,18 @@ const ProductSchema = mongoose.Schema(
       type: String,
     },
 
-    isInStock: {
-      type: Boolean,
-      default: true,
-    },
-
+   
     isShowcase: {
       type: Boolean,
       default: false,
     },
-    price: {
-      type: String,
-      default: "",
-    },
-    retailPrice: {
-      type: String,
-      default: "",
-    },
+  
     currencyValue: {
       type: String,
       required: true,
       default: "UAH",
     },
-    options: {
-      type: Object,
-      default: {}
-    },
+    
     ownOptions: {
       type: Object,
       default: {}
@@ -74,14 +60,7 @@ const ProductSchema = mongoose.Schema(
       type: Object,
       default: {}
     },
-    barcods: {
-      type: Object,
-      default: {}
-    },
-    barcode: {
-      type: String,
-      default:''
-    }
+   
   },
   {    
     minimize: false,
