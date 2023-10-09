@@ -51,7 +51,7 @@ const ProductSchema = mongoose.Schema(
       required: true,
       default: "UAH",
     },
-    
+    options: {},
     ownOptions: {
       type: Object,
       default: {}
