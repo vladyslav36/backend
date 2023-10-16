@@ -52,6 +52,9 @@ const ProductSchema = mongoose.Schema(
       default: "UAH",
     },
     options: {},
+    // price: String,
+    // retailPrice: String,
+    // isInStock:String,
     ownOptions: {
       type: Object,
       default: {}

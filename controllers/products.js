@@ -1,5 +1,4 @@
 const Product = require("../models/productModel")
-const Barcode = require("../models/barcodeModel")
 const { getSlug } = require("../utils/getSlug")
 const path = require("path")
 const sharp = require("sharp")
