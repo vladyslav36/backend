@@ -95,7 +95,7 @@ const migrateOptions = async () => {
       // product.optionValues = priceTable
       await Product.findOneAndUpdate(
         { _id: product._id },
-        { $unset: { options: 1 },ownOptions,optionValues:priceTable }
+        { ownOptions,optionValues:priceTable }
       )
       return product
       // console.log(priceTable)
@@ -124,9 +124,9 @@ const changeOptionsOrder = async () => {
 const resetFields = async () => {
   const products = await Product.find()
   await Promise.all(products.map(async item => {
-    await Product.findOneAndUpdate({_id:item._id},{$unset:{price:1,isInStock:1,retailPrice:1}})
+    await Product.findOneAndUpdate({_id:item._id},{$unset:{price:1,isInStock:1,retailPrice:1,options:1}})
   }))
   process.exit()
 }
 
-resetFields()
+// resetFields()
