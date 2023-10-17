@@ -1,5 +1,4 @@
 const Product = require("../models/productModel")
-const Barcode = require("../models/barcodeModel")
 const { getSlug } = require("../utils/getSlug")
 const path = require("path")
 const sharp = require("sharp")
@@ -65,13 +64,9 @@ exports.addProducts = asyncHandler(async (req, res) => {
     categoryId,
     catalogId,
     isShowcase,
-    isInStock,
     description,
-    options,
-    barcods,
-    barcode,
-    price,
-    retailPrice,
+    ownOptions,
+    optionValues,
     currencyValue,
   } = JSON.parse(req.body.values)
   const root = process.env.ROOT_NAME
@@ -121,38 +116,11 @@ exports.addProducts = asyncHandler(async (req, res) => {
     catalogId,
     description,
     isShowcase,
-    isInStock,
-    options,
-    barcods,
-    barcode,
-    price,
-    retailPrice,
+    ownOptions,
+    optionValues,
     currencyValue,
   })
   const data = await product.save()
-  if (barcode) {
-    await Barcode.findOneAndUpdate({ barcode }, { productId: data._id })
-  } else {
-    if (Object.keys(barcods).length) {
-      //  await Barcode.updateMany({ productId: data._id },{productId:null})
-      
-      const deepBc = async (barcods) => {
-        for (let key in barcods) {
-          if (typeof barcods[key] === "string") {
-            await Barcode.findOneAndUpdate(
-              { barcode: barcods[key] },
-              { productId: data._id }
-            )
-          } else {
-           await deepBc(barcods[key])
-          }
-        }
-      }
-     await deepBc(barcods)
-    }
-  }
-  // убираем из базы пустышки введенные но ненужные
-  await Barcode.deleteMany({ productId: null })
 
   setQntProducts()
   setQntCatalogProducts()
@@ -167,14 +135,10 @@ exports.updateProduct = asyncHandler(async (req, res) => {
     brandId,
     categoryId,
     catalogId,
-    options,
-    barcods,
-    barcode,
+    ownOptions,
+    optionValues,
     isShowcase,
-    isInStock,
     description,
-    price,
-    retailPrice,
     currencyValue,
   } = JSON.parse(req.body.values)
 
@@ -270,45 +234,15 @@ exports.updateProduct = asyncHandler(async (req, res) => {
       imagesSm,
       categoryId,
       catalogId,
-      options,
-      barcods,
-      barcode,
       description,
       isShowcase,
-      isInStock,
-      price,
-      retailPrice,
+      ownOptions,
+      optionValues,
       currencyValue,
     },
     { new: true }
   )
 
-   //  сначала устанавливаем для всех barcode соответствующие этому продукту productId:null
-  await Barcode.updateMany({ productId: _id }, { productId: null })
-  
-  if (barcode) {   
-    await Barcode.findOneAndUpdate({ barcode }, { productId: _id })   
-  } else {
-     if (Object.keys(barcods).length) {     
-      // потом заполняем в соответствии с barcods
-       const deepBc = async (barcods) => {
-         for (let key in barcods) {
-           if (typeof barcods[key] === "string") {            
-             await Barcode.findOneAndUpdate(
-               { barcode: barcods[key] },
-               { productId: _id }
-             )
-           } else {
-            await deepBc(barcods[key])
-           }
-         }
-       }
-      await deepBc(barcods)
-     }
-  }
-  // и затем убираем лишние
-  await Barcode.deleteMany({ productId: null })
-  
   setQntProducts()
   setQntCatalogProducts()
   res.status(200).json({ product: productUp })

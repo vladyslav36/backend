@@ -16,7 +16,7 @@ const ProductSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    // brand: String,
+    
     brandId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -25,9 +25,7 @@ const ProductSchema = mongoose.Schema(
     images: [{ type: String }],
     imagesMd: [{ type: String }],
     imagesSm: [{ type: String }],
-    // category: {
-    //   type: String,
-    // },
+    
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -42,43 +40,32 @@ const ProductSchema = mongoose.Schema(
       type: String,
     },
 
-    isInStock: {
-      type: Boolean,
-      default: true,
-    },
-
+   
     isShowcase: {
       type: Boolean,
       default: false,
     },
-    price: {
-      type: String,
-      default: "",
-    },
-    retailPrice: {
-      type: String,
-      default: "",
-    },
+  
     currencyValue: {
       type: String,
       required: true,
       default: "UAH",
     },
-    options: {
+    options: {},
+    // price: String,
+    // retailPrice: String,
+    // isInStock:String,
+    ownOptions: {
       type: Object,
       default: {}
     },
-    barcods: {
+    optionValues: {
       type: Object,
       default: {}
     },
-    barcode: {
-      type: String,
-      default:''
-    }
+   
   },
-  {
-    timestamps: true,
+  {    
     minimize: false,
   }
 )
