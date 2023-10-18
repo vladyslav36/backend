@@ -1,4 +1,5 @@
 const Category = require("../models/categoryModel")
+const Catalog=require('../models/catalogModel')
 const Product = require("../models/productModel")
 const { getSlug } = require("../utils/getSlug")
 const path = require("path")
@@ -27,7 +28,16 @@ exports.getBrands = asyncHandler(async (req, res) => {
   const categories = await Category.find({ parentId: null })
   res.status(200).json({ categories })
 })
-
+exports.getNavbarData = asyncHandler(async (req, res) => {  
+  const categories = await Category.find({ parentId: null })
+  const catalogs = await Catalog.find({ parentId: null })
+  const categoriesList=categories.sort((a, b) => (a.name > b.name ? 1 : -1))
+    .map((item) => ({ name: item.name, _id: item._id }))
+  const catalogsList = catalogs
+    .sort((a, b) => (a.name > b.name ? 1 : -1))
+    .map((item) => ({ name: item.name, _id: item._id }))
+  res.status(200).json({categoriesList,catalogsList})
+})
 exports.addCategory = asyncHandler(async (req, res) => {
   const { name, parent, parentId, description, options } = JSON.parse(
     req.body.values
