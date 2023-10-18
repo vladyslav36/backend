@@ -6,10 +6,11 @@ const { removeImage } = require("../utils/handleImages")
 const asyncHandler = require("express-async-handler")
 const { setQntProducts } = require("../utils/setQntProducts")
 const { getBrand } = require("../utils/getBrand")
+const { createPriceObject } = require("../utils/createPriceObject")
 
 exports.getAllCategories = asyncHandler(async (req, res) => {
   const categories = await Category.find()
-  res.status(200).json({ categories })  
+  res.status(200).json({ categories })
 })
 exports.getCategoryById = asyncHandler(async (req, res) => {
   const { id } = req.params
@@ -32,34 +33,33 @@ exports.addCategory = asyncHandler(async (req, res) => {
     req.body.values
   )
   const root = process.env.ROOT_NAME
-  let image,price,catalog
+  let image, price, catalog
   if (req.files === null) {
     image = ""
-    price = ''
-    catalog=''
+    price = ""
+    catalog = ""
   } else {
-    if ('image' in req.files) {
-       const file = req.files.image
-    const fileName = path.parse(file.name).name
-    const fileExt = path.parse(file.name).ext
-    image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
-    file.mv(`${root}${image}`)
+    if ("image" in req.files) {
+      const file = req.files.image
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${image}`)
     }
-    if ('price' in req.files) {
-       const file = req.files.price
-    const fileName = path.parse(file.name).name
-    const fileExt = path.parse(file.name).ext
-    price = `/upload/prices/${getSlug(fileName)}${fileExt}`
-    file.mv(`${root}${price}`)
+    if ("price" in req.files) {
+      const file = req.files.price
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      price = `/upload/prices/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${price}`)
     }
-    if ('catalog' in req.files) {
-       const file = req.files.catalog
-    const fileName = path.parse(file.name).name
-    const fileExt = path.parse(file.name).ext
-    catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
-    file.mv(`${root}${catalog}`)
+    if ("catalog" in req.files) {
+      const file = req.files.catalog
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${catalog}`)
     }
-   
   }
 
   const slug = getSlug(name)
@@ -98,36 +98,36 @@ exports.updateCategory = asyncHandler(async (req, res) => {
 
   let image, price, catalog
   // Здесь прайс и каталог загружаемые для скачивания прайс и каталог товаров
-  if (req.files===null) {
+  if (req.files === null) {
     if (imageClientPath) {
       // image = `/upload/images/category/${path.basename(imageClientPath)}`
-      image=category.image
+      image = category.image
     } else {
       image = ""
       await removeImage(category.image)
     }
-    if (priceClientPath) {      
-      price=category.price
+    if (priceClientPath) {
+      price = category.price
     } else {
       price = ""
       await removeImage(category.price)
     }
-    if (catalogClientPath) {      
-      catalog=category.catalog
+    if (catalogClientPath) {
+      catalog = category.catalog
     } else {
       catalog = ""
       await removeImage(category.catalog)
     }
   } else {
-    if ('image' in req.files) {
-       const file = req.files.image
-    const fileName = path.parse(file.name).name
-    const fileExt = path.parse(file.name).ext
-    image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
-    file.mv(`${root}${image}`)
-    await removeImage(category.image)
+    if ("image" in req.files) {
+      const file = req.files.image
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      image = `/upload/images/category/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${image}`)
+      await removeImage(category.image)
     }
-    if ('price' in req.files) {
+    if ("price" in req.files) {
       const file = req.files.price
       const fileName = path.parse(file.name).name
       const fileExt = path.parse(file.name).ext
@@ -135,13 +135,13 @@ exports.updateCategory = asyncHandler(async (req, res) => {
       file.mv(`${root}${price}`)
       await removeImage(category.price)
     }
-    if ('catalog' in req.files) {
-       const file = req.files.catalog
-       const fileName = path.parse(file.name).name
-       const fileExt = path.parse(file.name).ext
-       catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
-       file.mv(`${root}${catalog}`)
-       await removeImage(category.catalog)
+    if ("catalog" in req.files) {
+      const file = req.files.catalog
+      const fileName = path.parse(file.name).name
+      const fileExt = path.parse(file.name).ext
+      catalog = `/upload/catalogs/${getSlug(fileName)}${fileExt}`
+      file.mv(`${root}${catalog}`)
+      await removeImage(category.catalog)
     }
   }
 
@@ -168,31 +168,34 @@ exports.updateCategory = asyncHandler(async (req, res) => {
   if (parentId === null) {
     // в этом случае редактируется категория-бренд и нужно изменить все опции у всех товаров
     // которые относятся к этому бренду
-    const optionsArr=Object.keys(options)
+
     const products = await Product.find({ brandId: _id })
+   
     await Promise.all(
       products.map(async (product) => {
-        // сначала убираем из товара те опции которых не стало в бренде
-       const newOptions= Object.keys(product.options).reduce((acc, option) => {
-          if (optionsArr.includes(option)) {
-            acc[option]=product.options[option]
+        const newOwnOptions = Object.assign(
+          {},
+          ...Object.keys(options).map((item) => ({ [item]: [] }))
+        )
+
+        Object.keys(options).map((item) => {
+          if (item in product.ownOptions) {
+            newOwnOptions[item] = options[item].filter((value) =>
+              product.ownOptions[item].includes(value)
+            )
           }
-          return acc
-       }, {})
-        // потом добавляем в товар ключ опции в формате [опцич]:{} которые появились в бренде
-        for (const option of optionsArr) {
-          if (!newOptions.hasOwnProperty(option)) {
-            newOptions[option] = {}
-          }
-        }
-       
-        await Product.updateOne({ _id: product._id }, { options: newOptions })
+        })
+        
+        const newOptionValues = createPriceObject({
+          ownOptions: newOwnOptions,
+          optionValues: product.optionValues,
+        })
+        
+        await Product.updateOne({ _id: product._id }, { ownOptions:newOwnOptions,optionValues:newOptionValues })
       })
     )
   }
   res.status(200).json({ category: categoryUp })
-
-  
 })
 
 exports.deleteCategory = asyncHandler(async (req, res, next) => {

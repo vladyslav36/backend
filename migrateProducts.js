@@ -129,4 +129,4 @@ const resetFields = async () => {
   process.exit()
 }
 
-// resetFields()
+resetFields()
