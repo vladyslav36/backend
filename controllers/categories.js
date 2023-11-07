@@ -10,8 +10,9 @@ const { getBrand } = require("../utils/getBrand")
 const { createPriceObject } = require("../utils/createPriceObject")
 
 exports.getAllCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find()
-  res.status(200).json({ categories })
+  const categories = await Category.find() 
+  res.status(200).json({ categories })  
+ 
 })
 exports.getCategoryById = asyncHandler(async (req, res) => {
   const { id } = req.params
